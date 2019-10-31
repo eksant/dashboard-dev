@@ -1,6 +1,8 @@
 import React, { PureComponent, Suspense } from 'react'
 import ReactDOM from 'react-dom'
+import { Provider } from 'react-redux'
 import { CookiesProvider } from 'react-cookie'
+import { BrowserRouter, Switch, Route } from 'react-router-dom'
 
 import 'antd/dist/antd.css'
 import './styles/index.scss'
@@ -9,16 +11,23 @@ import 'react-app-polyfill/ie11'
 import 'react-app-polyfill/stable'
 import * as serviceWorker from './serviceWorker'
 
+import redux from './redux'
+import { TopBarProgress } from './components'
+import { AuthLayout } from './containers'
+
 class App extends PureComponent {
   render() {
     return (
       <CookiesProvider>
-        <div className="App">
-          <header className="App-header">
-            <h3>Developer Dashboard</h3>
-            <p>Comming Soon..</p>
-          </header>
-        </div>
+        <Provider store={redux}>
+          <BrowserRouter>
+            <Suspense fallback={<TopBarProgress />}>
+              <Switch>
+                <Route exact path="/login" render={props => <AuthLayout {...this.props} {...props} />} />
+              </Switch>
+            </Suspense>
+          </BrowserRouter>
+        </Provider>
       </CookiesProvider>
     )
   }
