@@ -1,0 +1,138 @@
+@import url('http://fonts.googleapis.com/css?family=Roboto:400, 300, 400italic, 500, 700, 100');
+@import url('http://fonts.googleapis.com/css?family=Open+Sans:400, 800, 300, 600, 700');
+@import url('http://fonts.googleapis.com/css?family=Abel');
+
+#root {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+body {
+  position: relative;
+  font-family: 'Roboto', sans-serif;
+}
+
+// .default-header {
+//   z-index: 69;
+//   width: 100%;
+//   position: fixed;
+//   height: 35px;
+//   background: whitesmoke;
+//   // line-height: 40px;
+//   // max-height: 64px;
+//   // padding: 0;
+
+//   .ant-layout-header {
+//     height: 100%;
+//     line-height: 100% !important;
+//     background: transparent;
+
+//     .ant-row {
+//       height: 100% !important;
+
+//       .menu-left {
+//         float: left;
+//         height: 100%;
+//       }
+
+//       .menu-right {
+//         float: right;
+//         height: 100%;
+//         text-align: right;
+
+//         .ant-menu {
+//           background: transparent;
+//           font-size: 12px;
+//         }
+
+//         .ant-menu-horizontal {
+//           line-height: 35px;
+//           border-bottom: 0px;
+//         }
+//       }
+//     }
+//   }
+
+// .ant-layout-header {
+//   height: 100%;
+//   line-height: 100% !important;
+//   padding: 0 30px;
+//   // background: whitesmoke;
+//   // box-shadow: 2px 0 5px rgba(0, 21, 41, 0.15);
+
+//   .ant-row {
+//     height: 100% !important;
+
+//     .menu-left {
+//       float: left;
+//       height: 100%;
+
+//       .logo-box {
+//         height: 100%;
+
+//         .logo {
+//           height: 100%;
+//         }
+//       }
+//     }
+
+//     .menu-right {
+//       float: right;
+//       text-align: right;
+//       height: 100%;
+
+//       .ant-menu {
+//         background: whitesmoke !important;
+//       }
+
+//       .ant-menu-horizontal {
+//         line-height: 49px !important;
+
+//         .ant-menu-submenu-title {
+//           padding: 0 15px !important;
+//         }
+//       }
+//     }
+//   }
+// }
+// }
+
+.default-layout {
+  margin-top: 0;
+}
+
+.margin-buttons {
+  margin-left: 5px;
+}
+
+.red-color {
+  color: red !important;
+}
+
+.page404 {
+  height: 500px;
+  line-height: 500px;
+  text-align: center;
+  position: relative;
+  img {
+    top: 50%;
+    left: 50%;
+    margin: 0;
+    height: 450px;
+    position: absolute;
+    transform: translate(-50%, -50%);
+  }
+}
+
+.footer {
+  height: 30px;
+  line-height: 30px;
+  text-align: center;
+  background: #e6e5e4;
+
+  .text-footer {
+    font-size: small;
+    color: gray;
+  }
+}
