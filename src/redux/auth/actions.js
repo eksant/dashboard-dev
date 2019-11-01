@@ -1,51 +1,92 @@
-import { LOGIN_LOADING, LOGIN_ERROR, LOGIN_SUCCESS } from './actionType';
-import { api, store, encrypt } from '../../utils';
+import { AUTH_LOADING, AUTH_ERROR, AUTH_SUCCESS } from './actionType'
+import { gun, store, encrypt } from '../../utils'
+
+const user = gun.user()
 
 const loginLoading = () => ({
-  type: LOGIN_LOADING,
-});
+  type: AUTH_LOADING,
+})
 
 const loginError = payload => ({
-  type: LOGIN_ERROR,
+  type: AUTH_ERROR,
   payload,
-});
+})
 
 const loginSuccess = payload => ({
-  type: LOGIN_SUCCESS,
+  type: AUTH_SUCCESS,
   payload,
-});
+})
 
 export const postLogin = payload => {
   return async dispatch => {
-    dispatch(loginLoading());
+    dispatch(loginLoading())
     try {
-      return api
-        .post('auth/login', payload, false)
-        .then(async resp => {
-          const { success, message, data } = resp;
-          if (success) {
-            dispatch(loginSuccess(data));
-            await store.set('user-access', encrypt(data.user));
-            await store.set('token-access', data.token_access);
-            await store.set('token-expired', data.token_expired);
-            if (payload.remember) {
-              await store.set('usr', encrypt(payload.email));
-              await store.set('pwd', encrypt(payload.password));
-            } else {
-              await store.remove('usr');
-              await store.remove('pwd');
+      return new Promise(async resolve => {
+        const { alias, passphare, remember } = payload
+
+        if (!alias || !passphare) {
+          const message = 'Invalid payload'
+          dispatch(loginError({ message }))
+          return resolve({ success: false, error: true, message })
+        }
+
+        if (remember) {
+          await store.set('alias', encrypt(alias))
+          await store.set('passphare', encrypt(passphare))
+        } else {
+          await store.remove('alias')
+          await store.remove('passphare')
+        }
+
+        user.auth(alias, passphare, ack => {
+          if (ack && !ack.err) {
+            const data = {
+              alias: ack.put.alias,
+              epriv: ack.sea.epriv,
+              epub: ack.sea.epub,
+              priv: ack.sea.priv,
+              pub: ack.sea.pub,
             }
+            dispatch(loginSuccess({ data }))
+            return resolve({ success: true, error: false, message: 'User login successfully!', data })
           } else {
-            dispatch(loginError(message));
+            dispatch(loginError({ message: ack.err }))
+            return resolve({ success: false, error: true, message: ack.err })
           }
-          return Promise.resolve(resp);
         })
-        .catch(error => {
-          dispatch(loginError(error.message));
-          return Promise.reject(error);
-        });
+      })
     } catch (error) {
-      console.error('Error Post Login: ', error);
+      console.error('Error Post Login: ', error)
     }
-  };
-};
+  }
+}
+
+export const postRegister = payload => {
+  return async dispatch => {
+    dispatch(loginLoading())
+    try {
+      return new Promise(resolve => {
+        const { alias, passphare } = payload
+
+        if (!alias || !passphare) {
+          const message = 'Invalid payload'
+          dispatch(loginError({ message }))
+          return resolve({ success: false, error: true, message })
+        }
+
+        user.create(alias, passphare, async ack => {
+          if (ack && !ack.err) {
+            await store.set('pubkey', encrypt(ack.pub))
+            dispatch(loginSuccess({ data: ack.pub }))
+            return resolve({ success: true, error: false, message: 'User created successfully!', data: ack.pub })
+          } else {
+            dispatch(loginError({ message: ack.err }))
+            return resolve({ success: false, error: true, message: ack.err })
+          }
+        })
+      })
+    } catch (error) {
+      console.error('Error Post Register: ', error)
+    }
+  }
+}

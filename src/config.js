@@ -1,10 +1,12 @@
 export default {
   app: {
     pageLimit: 20,
-    defaultLang: "en",
-    storeKey: "pfalfa"
+    defaultLang: 'en',
+    storeKey: 'pfalfa',
+    secretKey: '#PFALFAin2019#'
   },
   db: {
-    peers: ["http://localhost:8765/gun"]
-  }
-};
+    fileName: 'db',
+    peers: ['http://localhost:8765/gun'],
+  },
+}

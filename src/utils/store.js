@@ -2,7 +2,7 @@ import config from '../config';
 import { isObject } from './util';
 
 var store = {
-  name: config.storeKey,
+  name: config.app.storeKey,
   use,
   get,
   set,

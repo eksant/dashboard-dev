@@ -1,6 +1,7 @@
 import React from 'react'
 
-const AuthLayout = React.lazy(() => import('./AuthLayout'))
-// const DefaultLayout = React.lazy(() => import('./DefaultLayout'));
+const LoginLayout = React.lazy(() => import('./AuthLayout/LoginLayout'))
+const RegisterLayout = React.lazy(() => import('./AuthLayout/RegisterLayout'))
+const DefaultLayout = React.lazy(() => import('./DefaultLayout'))
 
-export { AuthLayout }
+export { LoginLayout, RegisterLayout, DefaultLayout }

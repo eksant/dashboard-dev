@@ -1,7 +1,8 @@
-import api from './api';
-import store from './store';
-import upload from './upload';
-import { layoutForm, layoutFormFull, layoutButton } from './layout';
+import api from './api'
+import gun from './gundb'
+import store from './store'
+import upload from './upload'
+import { layoutForm, layoutFormFull, layoutButton } from './layout'
 import {
   isList,
   isFunction,
@@ -17,10 +18,11 @@ import {
   parseObject,
   dashSpace,
   uCase,
-} from './util';
+} from './util'
 
 export {
   api,
+  gun,
   store,
   upload,
   layoutForm,
@@ -40,4 +42,4 @@ export {
   parseObject,
   dashSpace,
   uCase,
-};
+}

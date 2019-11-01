@@ -13,7 +13,7 @@ import * as serviceWorker from './serviceWorker'
 
 import redux from './redux'
 import { TopBarProgress } from './components'
-import { AuthLayout } from './containers'
+import { LoginLayout, RegisterLayout, DefaultLayout } from './containers'
 
 class App extends PureComponent {
   render() {
@@ -23,7 +23,9 @@ class App extends PureComponent {
           <BrowserRouter>
             <Suspense fallback={<TopBarProgress />}>
               <Switch>
-                <Route exact path="/login" render={props => <AuthLayout {...this.props} {...props} />} />
+                <Route exact path="/login" render={props => <LoginLayout {...this.props} {...props} />} />
+                <Route exact path="/register" render={props => <RegisterLayout {...this.props} {...props} />} />
+                <Route path="/" render={props => <DefaultLayout {...this.props} {...props} />} />
               </Switch>
             </Suspense>
           </BrowserRouter>
