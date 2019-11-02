@@ -1,7 +1,7 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
 import { Row, Col, Card, Form, Icon, Input, Button, Alert, Checkbox } from 'antd'
 
-import logoUrl from '../../assets/logo-pfalfa.svg'
 import { store, decrypt } from '../../utils'
 
 const LoginPage = props => {
@@ -22,7 +22,7 @@ const LoginPage = props => {
   return (
     <Row justify="center" className="login-background">
       <Col xs={{ span: 12, offset: 6 }} lg={{ span: 24, offset: 9 }} className="login">
-        <Card title={<img alt="logo" src={logoUrl} style={{ height: '50px' }} />} className="login-card">
+        <Card title={<h3>Login</h3>} className="login-card">
           <Form onSubmit={handleSubmit}>
             <Form.Item>
               {getFieldDecorator('alias', {
@@ -48,6 +48,8 @@ const LoginPage = props => {
               <Button type="primary" loading={loading} htmlType="submit" className="login-form-button">
                 Log in
               </Button>
+
+              <Link to="/register">Register New Account</Link>
             </Form.Item>
           </Form>
         </Card>

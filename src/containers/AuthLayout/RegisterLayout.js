@@ -3,10 +3,14 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { notification } from 'antd'
 
-import { postRegister } from '../../redux/actions'
+import { setNewAuth, postRegister } from '../../redux/actions'
 import { RegisterPage } from '../../pages'
 
 class RegisterLayout extends PureComponent {
+  componentDidMount = () => {
+    this.props.setNewAuth()
+  }
+
   onSubmit = val => {
     this.props
       .postRegister(val)
@@ -37,7 +41,7 @@ const mapStateToProps = state => {
   return { auth: state.auth }
 }
 
-const mapDispatchToProps = dispatch => bindActionCreators({ postRegister }, dispatch)
+const mapDispatchToProps = dispatch => bindActionCreators({ setNewAuth, postRegister }, dispatch)
 
 export default connect(
   mapStateToProps,

@@ -6,4 +6,7 @@ import PageError from './PageError'
 import LoginPage from './AuthPage/LoginPage'
 import RegisterPage from './AuthPage/RegisterPage'
 
-export { Page404, PageError, LoginPage, RegisterPage }
+/** user pages */
+import Dashboard from './Dashboard'
+
+export { Page404, PageError, LoginPage, RegisterPage, Dashboard }

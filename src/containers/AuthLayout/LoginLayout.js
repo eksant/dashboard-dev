@@ -3,10 +3,14 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { notification } from 'antd'
 
-import { postLogin } from '../../redux/actions'
+import { setNewAuth, postLogin } from '../../redux/actions'
 import { LoginPage } from '../../pages'
 
 class LoginLayout extends PureComponent {
+  componentDidMount = () => {
+    this.props.setNewAuth()
+  }
+
   onSubmit = val => {
     this.props
       .postLogin(val)
@@ -37,7 +41,7 @@ const mapStateToProps = state => {
   return { auth: state.auth }
 }
 
-const mapDispatchToProps = dispatch => bindActionCreators({ postLogin }, dispatch)
+const mapDispatchToProps = dispatch => bindActionCreators({ setNewAuth, postLogin }, dispatch)
 
 export default connect(
   mapStateToProps,

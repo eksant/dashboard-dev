@@ -1,4 +1,5 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
 import { Row, Col, Card, Form, Icon, Input, Button, Alert } from 'antd'
 
 const registerPage = props => {
@@ -38,6 +39,8 @@ const registerPage = props => {
               <Button type="primary" loading={loading} htmlType="submit" className="login-form-button">
                 Register
               </Button>
+
+              <Link to="/login">Back To Login</Link>
             </Form.Item>
           </Form>
         </Card>

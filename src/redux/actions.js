@@ -1,3 +1,3 @@
-import { postLogin, postRegister } from './auth/actions'
+import { setNewAuth, postLogin, postRegister, postLogout, getAuthUser } from './auth/actions'
 
-export { postLogin, postRegister }
+export { setNewAuth, postLogin, postRegister, postLogout, getAuthUser }

@@ -1,6 +1,7 @@
-import { AUTH_LOADING, AUTH_ERROR, AUTH_SUCCESS } from './actionType'
+import { AUTH_FORM, AUTH_LOADING, AUTH_ERROR, AUTH_SUCCESS } from './actionType'
 
 const initialState = {
+  skeleton: false,
   loading: false,
   error: false,
   message: null,
@@ -9,6 +10,15 @@ const initialState = {
 
 const reducers = (state = initialState, action) => {
   switch (action.type) {
+    case AUTH_FORM:
+      return {
+        ...state,
+        skeleton: true,
+        loading: false,
+        error: false,
+        message: null,
+        data: null,
+      }
     case AUTH_LOADING:
       return {
         ...state,
