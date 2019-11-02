@@ -22,19 +22,19 @@ const LoginPage = props => {
   return (
     <Row justify="center" className="login-background">
       <Col xs={{ span: 12, offset: 6 }} lg={{ span: 24, offset: 9 }} className="login">
-        <Card title={<h3>Login</h3>} className="login-card">
+        <Card title={<h3>LOGIN PFALFA</h3>} className="login-card">
           <Form onSubmit={handleSubmit}>
             <Form.Item>
               {getFieldDecorator('alias', {
-                initialValue: alias || 'user@email.com',
+                initialValue: alias,
                 rules: [{ required: true, message: 'Please input Your email!' }],
               })(<Input placeholder="Email" prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />} />)}
             </Form.Item>
             <Form.Item>
               {getFieldDecorator('passphare', {
-                initialValue: passphare || 'Sample Passphare',
+                initialValue: passphare,
                 rules: [{ required: true, message: 'Please input Your passphare!' }],
-              })(<Input placeholder="Passphare" prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />} />)}
+              })(<Input placeholder="Passphare" prefix={<Icon type="highlight" style={{ color: 'rgba(0,0,0,.25)' }} />} />)}
             </Form.Item>
 
             {error && <Alert message="Error" description={props.message} type="error" closable />}

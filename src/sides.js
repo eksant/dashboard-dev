@@ -1,18 +1,18 @@
 const sides = [
   { name: 'Dashboard', path: '/', icon: 'dashboard', roles: ['User'] },
   {
-    name: 'Manage Domain',
-    path: '/manage-domain',
+    name: 'Manage dApp',
+    path: '/manage-dapp',
     icon: 'global',
     roles: ['User'],
-    childs: [{ name: 'Name Services', path: '/name-services', icon: 'link', roles: ['User'] }],
+    childs: [{ name: 'Domain Name', path: '/domain', icon: 'link', roles: ['User'] }],
   },
   {
-    name: 'Storage',
+    name: 'Manage Storage',
     path: '/storage',
     icon: 'cloud-server',
     roles: ['User'],
-    childs: [{ name: 'File Storages', path: '/categories', icon: 'cloud', roles: ['User'] }],
+    childs: [{ name: 'File Storages', path: '/deploy', icon: 'cloud', roles: ['User'] }],
   },
 ]
 

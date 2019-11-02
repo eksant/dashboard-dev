@@ -22,15 +22,15 @@ const registerPage = props => {
           <Form onSubmit={handleSubmit}>
             <Form.Item>
               {getFieldDecorator('alias', {
-                initialValue: 'user@email.com',
+                initialValue: null,
                 rules: [{ required: true, message: 'Please input Your email!' }],
               })(<Input placeholder="Email" prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />} />)}
             </Form.Item>
             <Form.Item>
               {getFieldDecorator('passphare', {
-                initialValue: 'Sample Passphare',
+                initialValue: null,
                 rules: [{ required: true, message: 'Please input Your passphare!' }],
-              })(<Input placeholder="Passphare" prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />} />)}
+              })(<Input placeholder="Passphare" prefix={<Icon type="highlight" style={{ color: 'rgba(0,0,0,.25)' }} />} />)}
             </Form.Item>
 
             {error && props.message && <Alert message="Error" description={props.message} type="error" closable />}

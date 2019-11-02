@@ -7,6 +7,6 @@ export default {
   },
   db: {
     fileName: 'db',
-    peers: ['http://localhost:8765/gun'],
+    peers: ['http://localhost:8778/gun'],
   },
 }

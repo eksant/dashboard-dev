@@ -9,7 +9,7 @@ Developer Dashboard build with react.
 $ npm install
 
 # Run application
-$ npm run star
+$ npm run start
 
 # Build application
 $ npm run build 
