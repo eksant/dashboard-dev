@@ -2,6 +2,7 @@
   "name": "dashboard-dev",
   "version": "0.1.0",
   "private": true,
+  "homepage": "http://pfalfa-dashboard-dev.s3-website-ap-southeast-1.amazonaws.com",
   "scripts": {
     "start": "react-app-rewired start",
     "build": "react-app-rewired build"
