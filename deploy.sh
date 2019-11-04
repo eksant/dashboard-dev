@@ -1,7 +1,7 @@
 #!/bin/bash
 
 git pull origin master
-rm -rf node_modules/ yarn.lock && yarn
+# rm -rf node_modules/ yarn.lock && yarn
 if [ -d "./build" ]; then
   rm -rf build
 fi
