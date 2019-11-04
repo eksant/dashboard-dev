@@ -62,7 +62,7 @@ export const postLogin = payload => {
               priv: ack.sea.priv,
               pub: ack.sea.pub,
             }
-            await store.set('pubkey', data.pub)
+            await store.set('pubkey', encrypt(data.pub))
             dispatch(authSuccess({ data }))
             return resolve({ success: true, error: false, message: 'User login successfully!', data })
           } else {
@@ -109,8 +109,7 @@ export const postRegister = payload => {
 }
 
 export const postLogout = () => {
-  return async dispatch => {
-    dispatch(authLoading())
+  return async () => {
     try {
       user.leave()
       await store.remove('pubkey')
