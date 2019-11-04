@@ -17,6 +17,8 @@ const Page404 = React.lazy(() => import('../../pages/Page404'))
 const { Content } = Layout
 
 class DefaultLayout extends PureComponent {
+  _isMounted = false
+
   state = {
     menuOpenKeys: [],
     menuSelecteds: [],
@@ -24,18 +26,26 @@ class DefaultLayout extends PureComponent {
   }
 
   componentDidMount = async () => {
+    this._isMounted = true
+
     this.setDefaultState()
     await this.props.getAuthUser()
   }
 
+  componentWillUnmount() {
+    this._isMounted = false
+  }
+
   setDefaultState = async () => {
     const path = await pathName()
-
-    await this.setState({
-      menuOpenKeys: await pathNames(),
-      menuSelecteds: path ? [path] : [],
-    })
-    await this.setBreadcrumb()
+    
+    if (this._isMounted) {
+      await this.setState({
+        menuOpenKeys: await pathNames(),
+        menuSelecteds: path ? [path] : [],
+      })
+      await this.setBreadcrumb()
+    }
   }
 
   setBreadcrumb = async () => {
@@ -82,9 +92,9 @@ class DefaultLayout extends PureComponent {
 
   render() {
     const { menuOpenKeys, menuSelecteds, breadcrumbKeys } = this.state
-    const { data } = this.props.auth
+    const { loading, error, data } = this.props.auth
 
-    return store.get('pubkey') ? (
+    return (
       <Layout className="default-layout">
         <LayoutHeader {...this.props} />
         <LayoutSide
@@ -113,13 +123,11 @@ class DefaultLayout extends PureComponent {
                   )}
                 <Route exact path="*" render={props => <Page404 {...this.props} {...props} />} />
               </Switch>
-              {/* {!data && <Redirect to="/login" />} */}
+              {!loading && !error && !data && !store.get('pubkey') && <Redirect to="/login" />}
             </Suspense>
           </Content>
         </Layout>
       </Layout>
-    ) : (
-      <Redirect to="/login" />
     )
   }
 }
