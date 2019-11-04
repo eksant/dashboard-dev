@@ -7,6 +7,6 @@ export default {
   },
   db: {
     fileName: 'db',
-    peers: ['http://18.136.211.116:8778/gun'],
+    peers: ['18.136.211.116:8778/gun'],
   },
 }
