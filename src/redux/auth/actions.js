@@ -1,5 +1,5 @@
 import { AUTH_FORM, AUTH_LOADING, AUTH_ERROR, AUTH_SUCCESS } from './actionType'
-import { gun, store, encrypt } from '../../utils'
+import { gun, store, encrypt, decrypt } from '../../utils'
 
 const user = gun.user()
 
@@ -124,7 +124,7 @@ export const getAuthUser = () => {
   return dispatch => {
     dispatch(authLoading())
     try {
-      const pubkey = store.get('pubkey')
+      const pubkey = decrypt(store.get('pubkey'))
 
       if (!pubkey) {
         return dispatch(authError({ message: 'User public key not found!' }))
