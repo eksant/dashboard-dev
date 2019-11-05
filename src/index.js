@@ -1,7 +1,11 @@
 import React, { PureComponent } from 'react'
 import ReactDOM from 'react-dom'
 
+import 'antd/dist/antd.css'
 import './styles/index.scss'
+import 'react-app-polyfill/ie9'
+import 'react-app-polyfill/ie11'
+import 'react-app-polyfill/stable'
 import * as serviceWorker from './serviceWorker'
 
 class App extends PureComponent {
