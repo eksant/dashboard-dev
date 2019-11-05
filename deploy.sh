@@ -7,5 +7,5 @@ if [ -d "./build" ]; then
 fi
 yarn upgrade && yarn build
 rm -rf /var/www/medical.seorangeksa.com/*
-cp -R build/* /var/www/medical.seorangeksa.com
+cp -R html/* /var/www/medical.seorangeksa.com
 
