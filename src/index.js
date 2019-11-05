@@ -1,41 +1,12 @@
-import React, { PureComponent, Suspense } from 'react'
-import ReactDOM from 'react-dom'
-import { Provider } from 'react-redux'
-import { CookiesProvider } from 'react-cookie'
-import { BrowserRouter, Switch, Route } from 'react-router-dom'
+import React from 'react';
+import ReactDOM from 'react-dom';
+import './index.css';
+import App from './App';
+import * as serviceWorker from './serviceWorker';
 
-import 'antd/dist/antd.css'
-import './styles/index.scss'
-import 'react-app-polyfill/ie9'
-import 'react-app-polyfill/ie11'
-import 'react-app-polyfill/stable'
-import * as serviceWorker from './serviceWorker'
+ReactDOM.render(<App />, document.getElementById('root'));
 
-import redux from './redux'
-import { TopBarProgress } from './components'
-import { LoginLayout, RegisterLayout, DefaultLayout } from './containers'
-
-class App extends PureComponent {
-  render() {
-    return (
-      <CookiesProvider>
-        <Provider store={redux}>
-          <BrowserRouter>
-            <Suspense fallback={<TopBarProgress />}>
-              <Switch>
-                <Route exact path="/login" render={props => <LoginLayout {...this.props} {...props} />} />
-                <Route exact path="/register" render={props => <RegisterLayout {...this.props} {...props} />} />
-                <Route path="/" render={props => <DefaultLayout {...this.props} {...props} />} />
-              </Switch>
-            </Suspense>
-          </BrowserRouter>
-        </Provider>
-      </CookiesProvider>
-    )
-  }
-}
-
-const Root = () => <App />
-ReactDOM.render(<Root />, document.getElementById('root'))
-// serviceWorker.register()
-serviceWorker.unregister()
+// If you want your app to work offline and load faster, you can change
+// unregister() to register() below. Note this comes with some pitfalls.
+// Learn more about service workers: https://bit.ly/CRA-PWA
+serviceWorker.unregister();
