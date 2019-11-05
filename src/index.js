@@ -38,4 +38,4 @@ class App extends PureComponent {
 const Root = () => <App />
 ReactDOM.render(<Root />, document.getElementById('root'))
 // serviceWorker.register()
-serviceWorker.unregister()
+// serviceWorker.unregister()
