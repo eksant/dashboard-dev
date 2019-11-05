@@ -1,5 +1,7 @@
-import React, { PureComponent } from 'react'
+import React, { PureComponent, Suspense } from 'react'
 import ReactDOM from 'react-dom'
+import { Provider } from 'react-redux'
+import { BrowserRouter, Switch, Route } from 'react-router-dom'
 
 import 'antd/dist/antd.css'
 import './styles/index.scss'
@@ -8,23 +10,29 @@ import 'react-app-polyfill/ie11'
 import 'react-app-polyfill/stable'
 import * as serviceWorker from './serviceWorker'
 
+import redux from './redux'
+import { TopBarProgress } from './components'
+import { LoginLayout, RegisterLayout, DefaultLayout } from './containers'
+
 class App extends PureComponent {
   render() {
     return (
-      <div className="App">
-        <header className="App-header">
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a className="App-link" href="https://reactjs.org" target="_blank" rel="noopener noreferrer">
-            Learn React
-          </a>
-        </header>
-      </div>
+      <Provider store={redux}>
+        <BrowserRouter>
+          <Suspense fallback={<TopBarProgress />}>
+            <Switch>
+              {/* <Route exact path="/login" render={props => <LoginLayout {...this.props} {...props} />} /> */}
+              {/* <Route exact path="/register" render={props => <RegisterLayout {...this.props} {...props} />} /> */}
+              <Route path="/" render={props => <DefaultLayout {...this.props} {...props} />} />
+            </Switch>
+          </Suspense>
+        </BrowserRouter>
+      </Provider>
     )
   }
 }
 
-ReactDOM.render(<App />, document.getElementById('root'))
+const Root = () => <App />
+ReactDOM.render(<Root />, document.getElementById('root'))
 // serviceWorker.register()
 serviceWorker.unregister()
