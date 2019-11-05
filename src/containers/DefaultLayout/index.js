@@ -123,7 +123,7 @@ class DefaultLayout extends PureComponent {
                   )}
                 <Route exact path="*" render={props => <Page404 {...this.props} {...props} />} />
               </Switch>
-              {/* {!loading && !error && !data && !store.get('pubkey') && <Redirect to="/login" />} */}
+              {!loading && !error && !data && !store.get('pubkey') && <Redirect to="/login" />}
             </Suspense>
           </Content>
         </Layout>
