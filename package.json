@@ -2,13 +2,17 @@
   "name": "dashboard-dev",
   "version": "0.1.0",
   "private": true,
+  "homepage": "./",
   "scripts": {
-    "start": "react-app-rewired start",
-    "build": "NODE_ENV='development' && HTTPS=false && react-app-rewired build"
+    "start": "node index.js",
+    "start-react": "react-app-rewired start",
+    "build-start": "npm run build && node index.js",
+    "build": "react-app-rewired build && rm -rf html && mv build html"
   },
   "dependencies": {
     "antd": "^3.24.3",
     "crypto-js": "^3.1.9-1",
+    "express": "^4.17.1",
     "gun": "^0.2019.930",
     "moment": "^2.24.0",
     "react": "^16.11.0",

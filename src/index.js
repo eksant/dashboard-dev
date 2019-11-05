@@ -20,7 +20,7 @@ class App extends PureComponent {
     return (
       <CookiesProvider>
         <Provider store={redux}>
-          <BrowserRouter basename={'#'}>
+          <BrowserRouter>
             <Suspense fallback={<TopBarProgress />}>
               <Switch>
                 <Route exact path="/login" render={props => <LoginLayout {...this.props} {...props} />} />
