@@ -14,17 +14,17 @@ import * as serviceWorker from './serviceWorker'
 // import { TopBarProgress } from './components'
 // import { LoginLayout, RegisterLayout, DefaultLayout } from './containers'
 
-import { gun, store, decrypt } from './utils'
-const user = gun.user()
+// import { gun, store, decrypt } from './utils'
+// const user = gun.user()
 
 class App extends PureComponent {
-  async componentDidMount() {
-    const alias = await decrypt(store.get('alias'))
-    const passphare = await decrypt(store.get('passphare'))
-    user.auth(alias, passphare, ack => {
-      console.log('==ack', ack)
-    })
-  }
+  // async componentDidMount() {
+  //   const alias = await decrypt(store.get('alias'))
+  //   const passphare = await decrypt(store.get('passphare'))
+  //   user.auth(alias, passphare, ack => {
+  //     console.log('==ack', ack)
+  //   })
+  // }
 
   render() {
     return (
