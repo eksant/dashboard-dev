@@ -2,7 +2,6 @@
   "name": "dashboard-dev",
   "version": "0.1.0",
   "private": true,
-  "homepage": "medical.seorangeksa.com",
   "scripts": {
     "start": "react-app-rewired start",
     "build": "NODE_ENV='development' && HTTPS=false && react-app-rewired build"

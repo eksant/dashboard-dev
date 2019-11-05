@@ -38,7 +38,7 @@ class DefaultLayout extends PureComponent {
 
   setDefaultState = async () => {
     const path = await pathName()
-    
+
     if (this._isMounted) {
       await this.setState({
         menuOpenKeys: await pathNames(),
@@ -123,7 +123,7 @@ class DefaultLayout extends PureComponent {
                   )}
                 <Route exact path="*" render={props => <Page404 {...this.props} {...props} />} />
               </Switch>
-              {!loading && !error && !data && !store.get('pubkey') && <Redirect to="/login" />}
+              {!loading && !error && !data && !store.get('pubkey') && <Redirect from="/" to="/login" noThrow />}
             </Suspense>
           </Content>
         </Layout>
