@@ -5,7 +5,7 @@ git pull origin master
 if [ -d "./build" ]; then
   rm -rf build
 fi
-yarn upgrade && yarn build
+yarn build
 rm -rf /var/www/medical.seorangeksa.com/*
 cp -R html/* /var/www/medical.seorangeksa.com
 
