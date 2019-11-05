@@ -75,7 +75,7 @@ class DefaultLayout extends PureComponent {
   }
 
   getSideMenu = () => {
-    return sides.filter(item => item.roles.indexOf('User') > -1)
+    return sides.filter(item => item.roles.indexOf('Developer') > -1)
   }
 
   onChangeMenu = async menuKeys => {
@@ -112,7 +112,7 @@ class DefaultLayout extends PureComponent {
               <Switch>
                 {routes &&
                   routes.map(route =>
-                    route.component && route.roles.indexOf('User') > -1 ? (
+                    route.component && route.roles.indexOf('Developer') > -1 ? (
                       <Route
                         exact
                         key={route.path}

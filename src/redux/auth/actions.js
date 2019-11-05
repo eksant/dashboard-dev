@@ -63,6 +63,7 @@ export const postLogin = payload => {
               pub: ack.sea.pub,
             }
             await store.set('pubkey', encrypt(data.pub))
+
             dispatch(authSuccess({ data }))
             return resolve({ success: true, error: false, message: 'User login successfully!', data })
           } else {
@@ -136,6 +137,11 @@ export const getAuthUser = () => {
           epub: result.epub,
           pub: result.pub,
         }
+
+        user.get('profile').once(data => {
+          console.log('===profile', data)
+        })
+
         return dispatch(authSuccess({ data }))
       })
     } catch (error) {
