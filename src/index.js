@@ -9,7 +9,7 @@ import './styles/index.scss'
 import 'react-app-polyfill/ie9'
 import 'react-app-polyfill/ie11'
 import 'react-app-polyfill/stable'
-import * as serviceWorker from './serviceWorker'
+// import * as serviceWorker from './serviceWorker'
 
 import redux from './redux'
 import { TopBarProgress } from './components'
@@ -20,7 +20,7 @@ class App extends PureComponent {
     return (
       <CookiesProvider>
         <Provider store={redux}>
-          <BrowserRouter basename="/">
+          <BrowserRouter>
             <Suspense fallback={<TopBarProgress />}>
               <Switch>
                 <Route exact path="/login" render={props => <LoginLayout {...this.props} {...props} />} />
