@@ -1,5 +1,5 @@
 # https://www.robotstxt.org/robotstxt.html
 User-agent: *
-Disallow: /
+# Disallow: /
 # Strict-Transport-Security: max-age=31536000; includeSubDomains
 
