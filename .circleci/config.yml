@@ -12,9 +12,10 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          keys: pfalfa-{{ checksum "package.json" }}-{{ arch }}
+          keys: node-v2-{{ checksum "package.json" }}-{{ arch }}
+      - run: npm install
       - save_cache:
-          key: pfalfa-{{ checksum "package.json" }}-{{ arch }}
+          key: node-v2-{{ checksum "package.json" }}-{{ arch }}
           paths:
             - node_modules
 
