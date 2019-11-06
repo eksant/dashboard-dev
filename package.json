@@ -12,6 +12,7 @@
     "gun": "^0.2019.930",
     "moment": "^2.24.0",
     "react": "^16.11.0",
+    "react-cookie": "^4.0.1",
     "react-dom": "^16.11.0",
     "react-redux": "^7.1.1",
     "react-router-dom": "^5.1.2",
