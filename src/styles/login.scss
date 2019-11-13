@@ -5,14 +5,49 @@
   background: -webkit-linear-gradient(146deg, rgba(228, 227, 240, 1) 0%, rgba(176, 176, 236, 1) 35%, rgba(46, 201, 232, 1) 100%);
   background: linear-gradient(146deg, rgba(228, 227, 240, 1) 0%, rgba(176, 176, 236, 1) 35%, rgba(46, 201, 232, 1) 100%);
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#e4e3f0",endColorstr="#2ec9e8",GradientType=1);
+
+  .ant-page-header-heading {
+    height: 60px;
+    vertical-align: middle;
+
+    .ant-page-header-heading-title {
+      height: 100%;
+
+      .logo-box {
+        height: 100%;
+        text-align: left;
+        color: white;
+      }
+
+      .logo {
+        height: 100%;
+      }
+
+      a {
+        color: white !important;
+      }
+    }
+
+    .ant-page-header-heading-extra {
+      color: white;
+
+      .right-menu-box {
+        height: 100%;
+      }
+
+      .right-menu-label {
+        margin-right: 10px;
+      }
+    }
+  }
 }
 
 .login {
-  margin-top: 10%;
+  margin-top: 2%;
 }
 
 .login .login-card {
-  max-width: 350px;
+  max-width: 450px;
   box-shadow: 2px 0 5px rgba(0, 21, 41, 0.15);
 
   .ant-card-head {
@@ -22,4 +57,16 @@
 
 .login-card .login-form-button {
   width: 100%;
+}
+
+.login-card .login-button-left {
+  width: 78%;
+}
+
+.login-card .login-button-right {
+  width: 20%;
+}
+
+.ant-steps {
+  margin: 0 0 10px;
 }

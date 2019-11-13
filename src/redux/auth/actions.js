@@ -1,7 +1,8 @@
+import config from '../../config'
+import { api, store, encrypt, decrypt } from '../../utils'
 import { AUTH_FORM, AUTH_LOADING, AUTH_ERROR, AUTH_SUCCESS } from './actionType'
-import { gun, store, encrypt, decrypt } from '../../utils'
 
-const user = gun.user()
+const hostapi = config.api
 
 const authForm = () => ({
   type: AUTH_FORM,
@@ -32,49 +33,116 @@ export const setNewAuth = () => {
   }
 }
 
+export const setAuth = payload => {
+  return dispatch => {
+    dispatch(authLoading())
+    try {
+      dispatch(authSuccess({ data: payload }))
+    } catch (error) {
+      console.error('Error Set Auth: ', error)
+    }
+  }
+}
+
+export const getAuthUser = () => {
+  return dispatch => {
+    dispatch(authLoading())
+    try {
+      const pubkey = decrypt(store.get('pubkey'))
+      if (!pubkey) return dispatch(authError({ message: 'User public key not found!' }))
+
+      api.get(`${hostapi.ihub}/users`).then(result => {
+        const { success, message, data } = result
+        if (!success) return dispatch(authError({ message }))
+        return dispatch(authSuccess({ data }))
+      })
+    } catch (error) {
+      console.error('Error Get Auth User: ', error)
+    }
+  }
+}
+
 export const postLogin = payload => {
   return async dispatch => {
     dispatch(authLoading())
     try {
       return new Promise(async resolve => {
-        const { alias, passphare, remember } = payload
+        const { email, passphare, remember } = payload
 
-        if (!alias || !passphare) {
+        if (!email || !passphare) {
           const message = 'Invalid payload'
           dispatch(authError({ message }))
           return resolve({ success: false, error: true, message })
         }
 
         if (remember) {
-          await store.set('alias', encrypt(alias))
+          await store.set('email', encrypt(email))
           await store.set('passphare', encrypt(passphare))
         } else {
-          await store.remove('alias')
+          await store.remove('email')
           await store.remove('passphare')
         }
 
-        user.auth(alias, passphare, async ack => {
-          if (ack && !ack.err) {
-            const data = {
-              alias: ack.put.alias,
-              epriv: ack.sea.epriv,
-              epub: ack.sea.epub,
-              priv: ack.sea.priv,
-              pub: ack.sea.pub,
-            }
-            await store.set('pubkey', encrypt(data.pub))
+        api
+          .post(`${hostapi.ihub}/auth/login`, payload, false)
+          .then(async result => {
+            const { success, message, data } = result
+            if (!success) return dispatch(authError({ message }))
 
+            await store.set('pubkey', encrypt(data.pub))
             dispatch(authSuccess({ data }))
             return resolve({ success: true, error: false, message: 'User login successfully!', data })
-          } else {
-            await store.remove('pubkey')
-            dispatch(authError({ message: ack.err }))
-            return resolve({ success: false, error: true, message: ack.err })
-          }
-        })
+          })
+          .catch(error => console.error(error))
       })
     } catch (error) {
       console.error('Error Post Login: ', error)
+    }
+  }
+}
+
+export const postForgot = payload => {
+  return async dispatch => {
+    dispatch(authLoading())
+    try {
+      return api
+        .post(`${hostapi.ihub}/auth/forgot`, payload, false)
+        .then(async result => {
+          const { success, message, data } = result
+          if (!success) {
+            dispatch(authError({ message }))
+            return Promise.resolve({ success: false, message, data: null })
+          }
+
+          dispatch(authSuccess({ data }))
+          return Promise.resolve({ success: true, message, data })
+        })
+        .catch(error => console.error(error))
+    } catch (error) {
+      console.error('Error Post Forgot: ', error)
+    }
+  }
+}
+
+export const postReset = payload => {
+  return async dispatch => {
+    dispatch(authLoading())
+    try {
+      return api
+        .post(`${hostapi.ihub}/auth/reset`, payload, false)
+        .then(async result => {
+          const { success, message, data } = result
+          if (!success) {
+            dispatch(authError({ message }))
+            return Promise.resolve({ success: false, message, data: null })
+          }
+
+          dispatch(authSuccess({ data }))
+          return Promise.resolve({ success: true, message, data })
+        })
+        .catch(error => console.error(error))
+    } catch (error) {
+      console.error('Error Post Reset: ', error)
     }
   }
 }
@@ -83,25 +151,32 @@ export const postRegister = payload => {
   return async dispatch => {
     dispatch(authLoading())
     try {
-      return new Promise(resolve => {
-        const { alias, passphare } = payload
+      return new Promise(async resolve => {
+        const { email, passphare, confPassphare, hint } = payload
 
-        if (!alias || !passphare) {
+        if (!email || !passphare || !confPassphare || !hint) {
           const message = 'Invalid payload'
           dispatch(authError({ message }))
-          return resolve({ success: false, error: true, message })
+          return resolve({ error: true, message })
         }
 
-        user.create(alias, passphare, async ack => {
-          if (ack && !ack.err) {
-            await store.set('pubkey', encrypt(ack.pub))
-            dispatch(authSuccess({ data: ack.pub }))
-            return resolve({ success: true, error: false, message: 'User created successfully!', data: ack.pub })
-          } else {
-            dispatch(authError({ message: ack.err }))
-            return resolve({ success: false, error: true, message: ack.err })
-          }
-        })
+        if (passphare !== confPassphare) {
+          const message = 'Passwords does not match'
+          dispatch(authError({ message }))
+          return resolve({ error: true, message })
+        }
+
+        api
+          .post(`${hostapi.ihub}/auth/register`, payload, false)
+          .then(async result => {
+            const { success, message, data } = result
+            if (!success) return dispatch(authError({ message }))
+
+            await store.set('pubkey', encrypt(data.pub))
+            dispatch(authSuccess({ data }))
+            return resolve({ success: true, error: false, message: 'User registered successfully!', data })
+          })
+          .catch(error => console.error(error))
       })
     } catch (error) {
       console.error('Error Post Register: ', error)
@@ -112,40 +187,9 @@ export const postRegister = payload => {
 export const postLogout = () => {
   return async () => {
     try {
-      user.leave()
       await store.remove('pubkey')
     } catch (error) {
       console.error('Error Post Logout: ', error)
-    }
-  }
-}
-
-export const getAuthUser = () => {
-  return dispatch => {
-    dispatch(authLoading())
-    try {
-      const pubkey = decrypt(store.get('pubkey'))
-
-      if (!pubkey) {
-        return dispatch(authError({ message: 'User public key not found!' }))
-      }
-
-      gun.user(pubkey).once(result => {
-        if (!result) return dispatch(authSuccess({ data: null }))
-        const data = {
-          alias: result.alias,
-          epub: result.epub,
-          pub: result.pub,
-        }
-
-        user.get('profile').once(data => {
-          console.log('===profile', data)
-        })
-
-        return dispatch(authSuccess({ data }))
-      })
-    } catch (error) {
-      console.error('Error Get Auth User: ', error)
     }
   }
 }
