@@ -115,13 +115,18 @@ const registerPage = props => {
 
               <Form.Item>
                 {current < steps.length - 1 && (
-                  <Button type="primary" htmlType="submit" className={current > 0 ? 'login-button-left' : 'login-form-button'}>
+                  <Button
+                    type="primary"
+                    htmlType="submit"
+                    loading={loading}
+                    className={current > 0 ? 'login-button-left' : 'login-form-button'}
+                  >
                     Next
                   </Button>
                 )}
 
                 {current === steps.length - 1 && (
-                  <Button type="primary" loading={loading} htmlType="submit" className="login-button-left">
+                  <Button type="primary" htmlType="submit" loading={loading} className="login-button-left">
                     Register
                   </Button>
                 )}
