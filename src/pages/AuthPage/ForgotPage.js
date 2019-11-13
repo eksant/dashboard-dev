@@ -64,7 +64,7 @@ const forgotPage = props => {
                     {getFieldDecorator('email', {
                       initialValue: data && data.email,
                       rules: [{ required: true, message: 'Please input Your email!' }],
-                    })(<Input placeholder="Email" prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />} />)}
+                    })(<Input placeholder="Email" type="email" prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />} />)}
                   </Form.Item>
                   <Form.Item label="Your word recovery hint to reset password">
                     {getFieldDecorator('hint', {
@@ -87,7 +87,13 @@ const forgotPage = props => {
                     {getFieldDecorator('newPassphare', {
                       initialValue: data && data.newPassphare,
                       rules: [{ required: true, message: 'Please input new password!' }],
-                    })(<Input placeholder="New Password" prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />} />)}
+                    })(
+                      <Input
+                        placeholder="New Password"
+                        type="password"
+                        prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />}
+                      />
+                    )}
                   </Form.Item>
                 </Fragment>
               )}

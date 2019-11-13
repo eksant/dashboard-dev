@@ -47,13 +47,13 @@ const LoginPage = props => {
                 {getFieldDecorator('email', {
                   initialValue: email,
                   rules: [{ required: true, message: 'Please input Your email!' }],
-                })(<Input placeholder="Email" prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />} />)}
+                })(<Input placeholder="Email" type="email" prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />} />)}
               </Form.Item>
               <Form.Item>
                 {getFieldDecorator('passphare', {
                   initialValue: passphare,
                   rules: [{ required: true, message: 'Please input Your password!' }],
-                })(<Input placeholder="Password" prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />} />)}
+                })(<Input placeholder="Password" type="password" prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />} />)}
               </Form.Item>
 
               {error && <Alert message="Error" description={props.message} type="error" closable />}

@@ -61,19 +61,25 @@ const registerPage = props => {
                     {getFieldDecorator('email', {
                       initialValue: data && data.email,
                       rules: [{ required: true, message: 'Please input Your email!' }],
-                    })(<Input placeholder="Email" prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />} />)}
+                    })(<Input placeholder="Email" type="email" prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />} />)}
                   </Form.Item>
                   <Form.Item>
                     {getFieldDecorator('passphare', {
                       initialValue: data && data.passphare,
                       rules: [{ required: true, message: 'Please input Your password!' }],
-                    })(<Input placeholder="Password" prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />} />)}
+                    })(<Input placeholder="Password" type="password" prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />} />)}
                   </Form.Item>
                   <Form.Item>
                     {getFieldDecorator('confPassphare', {
                       initialValue: data && data.confPassphare,
                       rules: [{ required: true, message: 'Please input Your confirm password!' }],
-                    })(<Input placeholder="Confirm Password" prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />} />)}
+                    })(
+                      <Input
+                        placeholder="Confirm Password"
+                        type="password"
+                        prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />}
+                      />
+                    )}
                   </Form.Item>
                 </Fragment>
               )}
