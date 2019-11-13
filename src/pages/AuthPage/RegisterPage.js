@@ -5,7 +5,6 @@ import { Row, Col, Card, Form, PageHeader, Icon, Input, Checkbox, Button, Alert,
 import logo from '../../assets/logo.svg'
 
 const { Step } = Steps
-var state = { email: null, passphare: null, confPassphare: null, hint: null, agreement: null }
 
 const registerPage = props => {
   const { form, data, loading, error, steps, current, onNext, onPrev, onSubmit } = props
@@ -25,10 +24,6 @@ const registerPage = props => {
         }
       }
     })
-  }
-
-  const onChange = e => {
-    state = { [e.target.id]: e.target.value }
   }
 
   return (
@@ -66,33 +61,19 @@ const registerPage = props => {
                     {getFieldDecorator('email', {
                       initialValue: data && data.email,
                       rules: [{ required: true, message: 'Please input Your email!' }],
-                    })(
-                      <Input placeholder="Email" prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />} onChange={onChange} />
-                    )}
+                    })(<Input placeholder="Email" prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />} />)}
                   </Form.Item>
                   <Form.Item>
                     {getFieldDecorator('passphare', {
                       initialValue: data && data.passphare,
                       rules: [{ required: true, message: 'Please input Your password!' }],
-                    })(
-                      <Input
-                        placeholder="Password"
-                        prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />}
-                        onChange={onChange}
-                      />
-                    )}
+                    })(<Input placeholder="Password" prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />} />)}
                   </Form.Item>
                   <Form.Item>
                     {getFieldDecorator('confPassphare', {
                       initialValue: data && data.confPassphare,
                       rules: [{ required: true, message: 'Please input Your confirm password!' }],
-                    })(
-                      <Input
-                        placeholder="Confirm Password"
-                        prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />}
-                        onChange={onChange}
-                      />
-                    )}
+                    })(<Input placeholder="Confirm Password" prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />} />)}
                   </Form.Item>
                 </Fragment>
               )}
@@ -103,13 +84,7 @@ const registerPage = props => {
                     {getFieldDecorator('hint', {
                       initialValue: data && data.hint,
                       rules: [{ required: true, message: 'Please input some word hint!' }],
-                    })(
-                      <Input
-                        placeholder="Hint"
-                        prefix={<Icon type="highlight" style={{ color: 'rgba(0,0,0,.25)' }} />}
-                        onChange={onChange}
-                      />
-                    )}
+                    })(<Input placeholder="Hint" prefix={<Icon type="highlight" style={{ color: 'rgba(0,0,0,.25)' }} />} />)}
                   </Form.Item>
                 </Fragment>
               )}
@@ -127,7 +102,7 @@ const registerPage = props => {
               <Form.Item>
                 {getFieldDecorator('agreement', {
                   valuePropName: 'checked',
-                  initialValue: state.agreement,
+                  initialValue: data && data.agreement,
                   rules: [{ required: true, message: 'You must agree to the terms and condition!' }],
                 })(
                   <Checkbox>
