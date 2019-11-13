@@ -1,5 +1,4 @@
 import api from './api'
-import gun from './gundb'
 import store from './store'
 import upload from './upload'
 import { layoutForm, layoutFormFull, layoutButton } from './layout'
@@ -22,7 +21,6 @@ import {
 
 export {
   api,
-  gun,
   store,
   upload,
   layoutForm,

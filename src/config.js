@@ -5,8 +5,10 @@ export default {
     storeKey: 'pfalfa',
     secretKey: '#PFALFAin2019#',
   },
-  db: {
-    fileName: 'db',
-    peers: ['http://18.136.211.116:8778/gun'],
+  api: {
+    //http://18.136.211.116
+    ihub: 'http://localhost:3003/api',
+    pfalfa: 'http://localhost:3033/api',
+    dapps: 'http://localhost:8081',
   },
 }
