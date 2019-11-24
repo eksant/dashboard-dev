@@ -50,6 +50,14 @@ export const getAuthUser = () => {
       const pubkey = decrypt(store.get('pubkey'))
       if (!pubkey) return dispatch(authError({ message: 'User public key not found!' }))
 
+      gun.user(pubkey).once(data => {
+        if (!data) return dispatch(authError({ message: 'User not found' }))
+
+        delete data._
+        delete data.auth
+        return dispatch(authSuccess({ data }))
+      })
+
       // api.get(`${hostapi.ihub}/users`).then(result => {
       //   const { success, message, data } = result
       //   if (!success) return dispatch(authError({ message }))
