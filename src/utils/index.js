@@ -1,6 +1,7 @@
 import api from './api'
 import store from './store'
 import upload from './upload'
+import { gun, sea, textRandom } from './gundb'
 import { layoutForm, layoutFormFull, layoutButton } from './layout'
 import {
   isList,
@@ -21,6 +22,9 @@ import {
 
 export {
   api,
+  gun,
+  sea,
+  textRandom,
   store,
   upload,
   layoutForm,

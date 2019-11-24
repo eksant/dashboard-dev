@@ -1,3 +1,4 @@
+const hostApi = 'http://18.136.211.116'
 export default {
   app: {
     pageLimit: 20,
@@ -5,10 +6,13 @@ export default {
     storeKey: 'pfalfa',
     secretKey: '#PFALFAin2019#',
   },
+  db: {
+    peers: ['http://18.136.211.116:8765/gun']
+  },
   api: {
     //http://18.136.211.116
-    ihub: 'http://localhost:3003/api',
-    pfalfa: 'http://localhost:3033/api',
-    dapps: 'http://localhost:8081',
+    ihub: `${hostApi}:3003/api`,
+    pfalfa: `${hostApi}:3033/api`,
+    dapps: `${hostApi}:8081`,
   },
 }

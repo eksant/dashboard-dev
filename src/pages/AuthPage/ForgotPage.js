@@ -88,7 +88,7 @@ const forgotPage = props => {
                       initialValue: data && data.newPassphare,
                       rules: [{ required: true, message: 'Please input new password!' }],
                     })(
-                      <Input
+                      <Input.Password
                         placeholder="New Password"
                         type="password"
                         prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />}

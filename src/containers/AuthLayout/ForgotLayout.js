@@ -31,9 +31,6 @@ class ForgotLayout extends PureComponent {
   onForgotPassword = val => {
     this.props.postForgot(val).then(result => {
       if (result.success) {
-        const payload = { email: val.email, hint: val.hint, oldPassphare: result.data }
-
-        this.props.setAuth(payload)
         const current = this.state.current + 1
         this.setState({ current })
       }

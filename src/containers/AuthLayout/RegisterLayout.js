@@ -48,7 +48,6 @@ class RegisterLayout extends PureComponent {
   }
 
   onSubmit = val => {
-    console.log('==val', val)
     this.props
       .postRegister(val)
       .then(result => {

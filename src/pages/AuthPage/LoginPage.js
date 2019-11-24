@@ -53,7 +53,13 @@ const LoginPage = props => {
                 {getFieldDecorator('passphare', {
                   initialValue: passphare,
                   rules: [{ required: true, message: 'Please input Your password!' }],
-                })(<Input placeholder="Password" type="password" prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />} />)}
+                })(
+                  <Input.Password
+                    placeholder="Password"
+                    type="password"
+                    prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />}
+                  />
+                )}
               </Form.Item>
 
               {error && <Alert message="Error" description={props.message} type="error" closable />}
