@@ -3,31 +3,29 @@ language: node_js
 node_js:
   - node
 
-after_success:
-  - chmod +x deploy.sh
-  - './deploy.sh'
-# cache:
-#   yarn: true
-#   directories: node_modules
-
-# install:
-#   - npm i -g react-deploy-cli
-#   - npm i
-#   - npm run build
+cache:
+  yarn: true
+  directories: node_modules
 
 # script:
-#   - rm -rf node_modules
-#   - yarn build
+# - yarn test
 
-# deploy:
-#   provider: s3
-#   access_key_id: '$ACCESS_KEY_ID'
-#   secret_access_key: '$SECRET_ACCESS_KEY'
-#   bucket: 'staging.developer.pfalfa.io'
-#   skip_cleanup: true
-#   acl: public_read
-#   local_dir: build
+before_deploy:
+  - yarn global add travis-ci-cloudfront-invalidation
+  - yarn run build
 
-# branches:
-#   only:
-#     - master
+deploy:
+  provider: s3
+  access_key_id: $ACCESS_KEY_ID
+  secret_access_key: $SECRET_ACCESS_KEY
+  bucket: $S3_BUCKET_STAGING
+  skip_cleanup: true
+  local-dir: build
+  on:
+    branch: master
+
+after_deploy:
+  - travis-ci-cloudfront-invalidation -a $ACCESS_KEY_ID -s $SECRET_ACCESS_KEY -c $CLOUDFRONT_DIST_ID_STAGING -i '/*' -b $TRAVIS_BRANCH -p $TRAVIS_PULL_REQUEST
+# after_success:
+#   - chmod +x deploy.sh
+#   - './deploy.sh'

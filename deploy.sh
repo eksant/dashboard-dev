@@ -32,7 +32,6 @@ sudo apt-get update && sudo apt-get install s3cmd
 # Deploy S3
 s3cmd --access_key=$ACCESS_KEY_ID --secret_key=$SECRET_ACCESS_KEY sync build/* s3://$S3_BUCKET
 
-
 # sudo -H pip install awscli --upgrade --user
 # export AWS_ACCESS_KEY_ID=$ACCESS_KEY_ID
 # export AWS_SECRET_ACCESS_KEY=$SECRET_ACCESS_KEY
@@ -44,13 +43,3 @@ s3cmd --access_key=$ACCESS_KEY_ID --secret_key=$SECRET_ACCESS_KEY sync build/* s
 # aws cloudfront create-invalidation \
 #   --distribution-id $CLOUDFRONT_DIST_ID \
 #   --paths /*
-
-# git pull origin develop
-# rm -rf node_modules/ yarn.lock && yarn
-# if [ -d "./build" ]; then
-# rm -rf build
-# fi
-# yarn
-# yarn build
-# rm -rf /var/www/medical.seorangeksa.com/*
-# cp -R build/* /var/www/medical.seorangeksa.com
