@@ -4,24 +4,27 @@ AWS_S3_REGION="ap-southeast-1b"
 STAGING_BRANCH="master"
 PRODUCTION_BRANCH="production"
 
-NODE_ENV="staging"
-CLOUDFRONT_DIST_ID=$CLOUDFRONT_DIST_ID_STAGING
-# if [[ $TRAVIS_BRANCH == $STAGING_BRANCH ]]; then
-#   NODE_ENV="staging"
-#   CLOUDFRONT_DIST_ID=$CLOUDFRONT_DIST_ID_STAGING
-#   yarn build
-# elif [[ $TRAVIS_BRANCH == $PRODUCTION_BRANCH ]]; then
-#   NODE_ENV="production"
-#   CLOUDFRONT_DIST_ID=$CLOUDFRONT_DIST_ID_PRODUCTION
-#   yarn build
-# else
-#   echo "Not deploying"
-#   exit
-# fi
+# NODE_ENV="staging"
+# CLOUDFRONT_DIST_ID=$CLOUDFRONT_DIST_ID_STAGING
+NODE_ENV=''
+CLOUDFRONT_DIST_ID=''
+if [[ $TRAVIS_BRANCH == $STAGING_BRANCH ]]; then
+  NODE_ENV="staging"
+  CLOUDFRONT_DIST_ID=$CLOUDFRONT_DIST_ID_STAGING
+  yarn build
+elif [[ $TRAVIS_BRANCH == $PRODUCTION_BRANCH ]]; then
+  NODE_ENV="production"
+  CLOUDFRONT_DIST_ID=$CLOUDFRONT_DIST_ID_PRODUCTION
+  yarn build
+else
+  echo "Not deploying"
+  exit
+fi
 
 S3_BUCKET="$NODE_ENV.developer.pfalfa.io"
 echo "Deploying to the $S3_BUCKET bucket"
 
+pip install --upgrade pip
 pip install awscli --upgrade --user
 aws s3 sync public/ "s3://$S3_BUCKET" --acl public-read --delete
 
