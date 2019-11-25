@@ -50,7 +50,7 @@ export const getDapps = (page = 1) => {
     try {
       return api
         .get(`${hostapi.dapps}/dapps/containers`)
-        .then(async datas => {
+        .then(datas => {
           console.log('==datas', datas)
 
           dispatch(dappsSuccess({ datas }))

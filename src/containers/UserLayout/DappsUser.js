@@ -19,16 +19,16 @@ class DappsUser extends PureComponent {
     }
   }
 
+  onRefresh = async () => {
+    // await this.props.getDapps()
+  }
+
   onPageNew = async () => {
     await this.props.setNewDapp()
   }
 
   onPageEdit = async id => {
     await this.props.getDappById(id)
-  }
-
-  onRefresh = async () => {
-    await this.props.getDapps()
   }
 
   onBack = async () => {
