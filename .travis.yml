@@ -13,6 +13,7 @@ script:
 before_deploy:
   - yarn global add travis-ci-cloudfront-invalidation
   # - yarn build
+  - npm run build
 
 deploy:
   provider: s3
