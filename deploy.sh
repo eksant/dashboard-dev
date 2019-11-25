@@ -24,19 +24,23 @@ fi
 S3_BUCKET="$NODE_ENV.developer.pfalfa.io"
 echo "Deploying to the $S3_BUCKET bucket"
 
-# pip install --upgrade pip
-# pip install awscli --upgrade --user
-sudo -H pip install awscli --upgrade --user
-sudo -H export AWS_ACCESS_KEY_ID=$ACCESS_KEY_ID
-sudo -H export AWS_SECRET_ACCESS_KEY=$SECRET_ACCESS_KEY
+# Install s3cmd (https://s3tools.org/repositories)
+wget -O- -q http://s3tools.org/repo/deb-all/stable/s3tools.key | sudo apt-key add -
+sudo wget -O/etc/apt/sources.list.d/s3tools.list
+sudo apt-get update && sudo apt-get install s3cmd
 
-aws configure set region $AWS_S3_REGION --profile default
 
-aws s3 sync public/ "s3://$S3_BUCKET" --acl public-read --delete
+# sudo -H pip install awscli --upgrade --user
+# export AWS_ACCESS_KEY_ID=$ACCESS_KEY_ID
+# export AWS_SECRET_ACCESS_KEY=$SECRET_ACCESS_KEY
 
-aws cloudfront create-invalidation \
-  --distribution-id $CLOUDFRONT_DIST_ID \
-  --paths /*
+# aws configure set region $AWS_S3_REGION --profile default
+
+# aws s3 sync public/ "s3://$S3_BUCKET" --acl public-read --delete
+
+# aws cloudfront create-invalidation \
+#   --distribution-id $CLOUDFRONT_DIST_ID \
+#   --paths /*
 
 # git pull origin develop
 # rm -rf node_modules/ yarn.lock && yarn
