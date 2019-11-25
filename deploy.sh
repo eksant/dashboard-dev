@@ -26,9 +26,9 @@ echo "Deploying to the $S3_BUCKET bucket"
 
 # pip install --upgrade pip
 # pip install awscli --upgrade --user
-sudo pip install awscli --upgrade --user
-export AWS_ACCESS_KEY_ID=$ACCESS_KEY_ID
-export AWS_SECRET_ACCESS_KEY=$SECRET_ACCESS_KEY
+sudo -H pip install awscli --upgrade --user
+sudo -H export AWS_ACCESS_KEY_ID=$ACCESS_KEY_ID
+sudo -H export AWS_SECRET_ACCESS_KEY=$SECRET_ACCESS_KEY
 
 aws configure set region $AWS_S3_REGION --profile default
 
