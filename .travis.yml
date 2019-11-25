@@ -1,19 +1,19 @@
 # sudo: required
 language: node_js
 node_js:
-  - 8.9.4
+  - 8.14.0
   # - node
 
-cache:
-  yarn: true
-  directories: node_modules
+# cache:
+# yarn: true
+# directories: node_modules
 
 install:
-  - yarn global add travis-ci-cloudfront-invalidation
+  # - yarn global add travis-ci-cloudfront-invalidation
   - yarn
 
 script:
-  - echo "skipping tests"
+  # - echo "skipping tests"
   - yarn build
 
 # before_deploy:
@@ -22,7 +22,7 @@ script:
 
 deploy:
   provider: s3
-  edge: true
+  # edge: true
   access_key_id: $ACCESS_KEY_ID
   secret_access_key: $SECRET_ACCESS_KEY
   bucket: $S3_BUCKET_STAGING
@@ -31,9 +31,8 @@ deploy:
   local_dir: build
   on:
     branch: master
-
-after_deploy:
-  - travis-ci-cloudfront-invalidation -a $ACCESS_KEY_ID -s $SECRET_ACCESS_KEY -c $CLOUDFRONT_DIST_ID_STAGING -i '/*' -b $TRAVIS_BRANCH -p $TRAVIS_PULL_REQUEST
+# after_deploy:
+# - travis-ci-cloudfront-invalidation -a $ACCESS_KEY_ID -s $SECRET_ACCESS_KEY -c $CLOUDFRONT_DIST_ID_STAGING -i '/*' -b $TRAVIS_BRANCH -p $TRAVIS_PULL_REQUEST
 # after_success:
 #   - chmod +x deploy.sh
 #   - './deploy.sh'
