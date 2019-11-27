@@ -1,39 +1,30 @@
-# sudo: required
 language: node_js
 node_js:
-  # - 8.14.0
   - node
 
-# cache:
-# yarn: true
-# directories: node_modules
-
-install:
-  - yarn global add travis-ci-cloudfront-invalidation
-  - yarn
-
-script:
-  - echo "skipping tests"
-  - yarn build
-
-# before_deploy:
+# install:
 #   - yarn global add travis-ci-cloudfront-invalidation
+#   - yarn
+
+# script:
+#   - echo "skipping tests"
 #   - yarn build
 
-deploy:
-  provider: s3
-  # edge: true
-  access_key_id: $ACCESS_KEY_ID
-  secret_access_key: $SECRET_ACCESS_KEY
-  bucket: 'staging.developer.pfalfa.io'
-  skip_cleanup: true
-  # acl: public_read
-  local_dir: build
-  on:
-    branch: master
+# deploy:
+#   provider: s3
+#   access_key_id: $ACCESS_KEY_ID
+#   secret_access_key: $SECRET_ACCESS_KEY
+#   bucket: 'staging.developer.pfalfa.io'
+#   skip_cleanup: true
+#   # acl: public_read
+#   local_dir: build
+#   on:
+#     branch: master
 
-after_deploy:
+# after_deploy:
+#   - travis-ci-cloudfront-invalidation -a $ACCESS_KEY_ID -s $SECRET_ACCESS_KEY -c $CLOUDFRONT_DIST_ID_STAGING -i '/*' -b $TRAVIS_BRANCH -p $TRAVIS_PULL_REQUEST
+
+after_success:
+  - chmod +x deploy.sh
+  - './deploy.sh'
   - travis-ci-cloudfront-invalidation -a $ACCESS_KEY_ID -s $SECRET_ACCESS_KEY -c $CLOUDFRONT_DIST_ID_STAGING -i '/*' -b $TRAVIS_BRANCH -p $TRAVIS_PULL_REQUEST
-# after_success:
-#   - chmod +x deploy.sh
-#   - './deploy.sh'
