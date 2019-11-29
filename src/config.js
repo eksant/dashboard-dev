@@ -7,7 +7,7 @@ export default {
     secretKey: '#PFALFAin2019#',
   },
   db: {
-    peers: ['https://18.136.211.116:8778/gun']
+    peers: ['http://18.136.211.116:8778/gun']
   },
   api: {
     //http://18.136.211.116

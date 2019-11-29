@@ -2,42 +2,41 @@ language: node_js
 node_js:
   - node
 
-before_install:
-  - curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
-  - echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
-  - sudo apt-get update
-  - sudo apt-get install apt-transport-https -y
-  # - curl -sL https://deb.nodesource.com/setup_9.x | sudo -E bash -
-  - sudo apt-get install yarn -y -qq
+# before_install:
+#   - curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
+#   - echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
+#   - sudo apt-get update
+#   - sudo apt-get install apt-transport-https -y
+#   - sudo apt-get install yarn -y -qq
 
-cache:
-  yarn: true
-  directories:
-    - node_modules
+# cache:
+#   yarn: true
+#   directories:
+#     - node_modules
 
-install:
-  - yarn global add travis-ci-cloudfront-invalidation
-  - yarn
+# install:
+#   - yarn global add travis-ci-cloudfront-invalidation
+#   - yarn
 
-script:
-  - echo "skipping tests"
-  - yarn build
+# script:
+#   - echo "skipping tests"
+#   - yarn build
 
-deploy:
-  provider: s3
-  access_key_id: $ACCESS_KEY_ID
-  secret_access_key: $SECRET_ACCESS_KEY
-  bucket: 'staging.developer.pfalfa.io'
-  skip_cleanup: true
-  # acl: public_read
-  local_dir: build
+# deploy:
+#   provider: s3
+#   access_key_id: $ACCESS_KEY_ID
+#   secret_access_key: $SECRET_ACCESS_KEY
+#   bucket: 'staging.developer.pfalfa.io'
+#   skip_cleanup: true
+#   # acl: public_read
+#   local_dir: build
 
 on:
   branch: master
 # after_deploy:
 #   - travis-ci-cloudfront-invalidation -a $ACCESS_KEY_ID -s $SECRET_ACCESS_KEY -c $CLOUDFRONT_DIST_ID_STAGING -i '/*' -b $TRAVIS_BRANCH -p $TRAVIS_PULL_REQUEST
 
-# after_success:
-#   - chmod +x deploy.sh
-#   - './deploy.sh'
-#   - travis-ci-cloudfront-invalidation -a $ACCESS_KEY_ID -s $SECRET_ACCESS_KEY -c $CLOUDFRONT_DIST_ID_STAGING -i '/*' -b $TRAVIS_BRANCH -p $TRAVIS_PULL_REQUEST
+after_success:
+  - chmod +x deploy.sh
+  - './deploy.sh'
+  - travis-ci-cloudfront-invalidation -a $ACCESS_KEY_ID -s $SECRET_ACCESS_KEY -c $CLOUDFRONT_DIST_ID_STAGING -i '/*' -b $TRAVIS_BRANCH -p $TRAVIS_PULL_REQUEST
