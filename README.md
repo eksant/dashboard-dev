@@ -1,5 +1,7 @@
 # Dashboard Dev
 
+[![Build Status](https://travis-ci.org/pfalfa/dashboard-dev.svg?branch=master)](https://travis-ci.org/pfalfa/dashboard-dev)
+
 Developer Dashboard build with react.
 
 ## Usage
