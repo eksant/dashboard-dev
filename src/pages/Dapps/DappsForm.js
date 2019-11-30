@@ -1,5 +1,5 @@
 import React from 'react'
-import { Card, Form, Skeleton, Input, Radio, Row, Col, Button } from 'antd'
+import { Card, Form, Skeleton, Input, InputNumber, Radio, Row, Col, Button } from 'antd'
 
 import PageError from '../PageError'
 import { layoutForm, layoutButton } from '../../utils'
@@ -31,7 +31,21 @@ const DappsForm = props => {
                   {getFieldDecorator('hostname', {
                     initialValue: data && data.hostname,
                     rules: [{ required: true, message: 'Please input  hostname!' }],
-                  })(<Input placeholder="Input category hostname.." />)}
+                  })(<Input placeholder="Input host name.." />)}
+                </Form.Item>
+                <Form.Item label="Port" {...layoutForm}>
+                  {getFieldDecorator('port', {
+                    initialValue: data && data.port,
+                    rules: [{ required: true, message: 'Please input port!' }],
+                  })(<InputNumber placeholder="Input port.." style={{ width: '100%' }} />)}
+                </Form.Item>
+              </Col>
+              <Col span={12}>
+                <Form.Item label="Domain Name" {...layoutForm}>
+                  {getFieldDecorator('domainname', {
+                    initialValue: data && data.domainname,
+                    rules: [{ required: true, message: 'Please input domainname!' }],
+                  })(<Input placeholder="Input domain name.." />)}
                 </Form.Item>
                 <Form.Item label="Status" {...layoutForm}>
                   {getFieldDecorator('status', {
@@ -43,14 +57,6 @@ const DappsForm = props => {
                       <Radio value={false}>Inactive</Radio>
                     </Radio.Group>
                   )}
-                </Form.Item>
-              </Col>
-              <Col span={12}>
-                <Form.Item label="Domain Name" {...layoutForm}>
-                  {getFieldDecorator('domainname', {
-                    initialValue: data && data.domainname,
-                    rules: [{ required: false, message: 'Please input domainname!' }],
-                  })(<Input placeholder="Input category domainname.." />)}
                 </Form.Item>
               </Col>
             </Row>

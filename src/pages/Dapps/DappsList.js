@@ -23,6 +23,10 @@ const DappsList = props => {
       dataIndex: 'domainname',
     },
     {
+      title: 'Port',
+      dataIndex: 'port',
+    },
+    {
       title: 'Status',
       render: record => {
         const color = record.status ? 'green' : 'magenta'
