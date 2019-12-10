@@ -7,7 +7,8 @@ export default {
     secretKey: '#PFALFAin2019#',
   },
   db: {
-    peers: ['http://18.136.211.116:8778/gun']
+    // peers: ['http://18.136.211.116:8778/gun'],
+    peers: ['https://pfalfa-ihub.pfalfa.io/gun']
   },
   api: {
     //http://18.136.211.116
