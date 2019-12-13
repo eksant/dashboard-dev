@@ -1,6 +1,7 @@
 import React from 'react'
+import moment from 'moment'
 import { Link } from 'react-router-dom'
-import { Card, Table, Divider, Button, Icon, Tag, Popconfirm } from 'antd'
+import { Card, Table, Divider, Button, Icon, Popconfirm } from 'antd'
 
 import PageError from '../PageError'
 
@@ -15,40 +16,38 @@ const DappsList = props => {
       dataIndex: 'key',
     },
     {
-      title: 'Host Name',
-      dataIndex: 'hostname',
+      title: 'Dapp Name',
+      dataIndex: 'name',
     },
     {
-      title: 'Domain Name',
-      dataIndex: 'domainname',
+      title: 'IP Address',
+      dataIndex: 'hostIP',
     },
     {
       title: 'Port',
       dataIndex: 'port',
     },
     {
-      title: 'Status',
-      render: record => {
-        const color = record.status ? 'green' : 'magenta'
-        return (
-          <Tag color={color} size="small">
-            {record.status ? 'Active' : 'Inactive'}
-          </Tag>
-        )
-      },
+      title: 'Dapp UID',
+      dataIndex: 'dappUid',
+    },
+    {
+      title: 'Created At',
+      dataIndex: 'dappCreated',
+      render: dappCreated => moment(dappCreated).format('DD MMM YYYY hh:mm'),
     },
     {
       align: 'right',
       render: record => {
         return (
           <span>
-            <Link to={`${path}/${record._id}`}>
-              <Button type="link" icon="edit" size="small">
-                Edit
+            <Link to={`upload/${record.id}`}>
+              <Button type="link" icon="cloud-upload" size="small">
+                Upload
               </Button>
             </Link>
             <Divider type="vertical" />
-            <Popconfirm title="Are you sure delete this record?" onConfirm={() => onDeleteData(record._id)} okText="Yes" cancelText="No">
+            <Popconfirm title="Are you sure delete this record?" onConfirm={() => onDeleteData(record.id)} okText="Yes" cancelText="No">
               <Button type="link" icon="delete" className="red-color" size="small">
                 Delete
               </Button>
@@ -72,7 +71,7 @@ const DappsList = props => {
           <Link to={`${path}/new`}>
             <Button disabled={error} type="primary" className="margin-buttons">
               <Icon type="plus-circle" />
-              New Data
+              Create Dapp
             </Button>
           </Link>
         </span>

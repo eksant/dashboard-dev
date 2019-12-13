@@ -7,20 +7,18 @@ import { basePath } from '../../utils'
 import { DappsList, DappsForm } from '../../pages'
 import { setNewDapp, getDapps, getDappById, createDapp, deleteDapp } from '../../redux/actions'
 
-class DappsUser extends PureComponent {
+class DappsDev extends PureComponent {
   componentDidMount() {
     const { page } = this.props
     if (page === 'new') {
       this.onPageNew()
-    } else if (page === 'edit') {
-      this.onPageEdit(this.props.match.params.id)
     } else {
       this.onRefresh()
     }
   }
 
   onRefresh = async () => {
-    // await this.props.getDapps()
+    await this.props.getDapps()
   }
 
   onPageNew = async () => {
@@ -88,7 +86,7 @@ class DappsUser extends PureComponent {
 
   onDeleteData = async id => {
     if (id) {
-      this.props.deleteProduct(id).then(resp => {
+      this.props.deleteDapp(id).then(resp => {
         notification[resp.success ? 'success' : 'warning']({
           message: 'Application Message',
           description: resp.message,
@@ -138,4 +136,4 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => bindActionCreators({ setNewDapp, getDapps, getDappById, createDapp, deleteDapp }, dispatch)
 
-export default connect(mapStateToProps, mapDispatchToProps)(DappsUser)
+export default connect(mapStateToProps, mapDispatchToProps)(DappsDev)

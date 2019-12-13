@@ -1,13 +1,12 @@
 import React from 'react'
 
-const DashboardUser = React.lazy(() => import('./containers/UserLayout/DashboardUser'))
-const DappsUser = React.lazy(() => import('./containers/UserLayout/DappsUser'))
+const DashboardDev = React.lazy(() => import('./containers/DeveloperLayout/DashboardDev'))
+const DappsDev = React.lazy(() => import('./containers/DeveloperLayout/DappsDev'))
 
 const routes = [
-  { title: 'Dashboard', path: '/', roles: ['Developer'], component: DashboardUser },
-  { title: 'Domain List', page: 'list', path: '/manage-dapp/domains', roles: ['Developer'], component: DappsUser },
-  { title: 'Create Domain', page: 'new', path: '/manage-dapp/domains/new', roles: ['Developer'], component: DappsUser },
-  { title: 'Edit Domain', page: 'edit', path: '/manage-dapp/domains/edit', roles: ['Developer'], component: DappsUser },
+  { title: 'Dashboard', path: '/', roles: ['Developer'], component: DashboardDev },
+  { title: 'Dapps List', page: 'list', path: '/dapps', roles: ['Developer'], component: DappsDev },
+  { title: 'Create Dapp', page: 'new', path: '/dapps/new', roles: ['Developer'], component: DappsDev },
 ]
 
 export default routes

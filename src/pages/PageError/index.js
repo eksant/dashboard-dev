@@ -2,14 +2,15 @@ import React from 'react'
 import { Result, Button, Icon, Typography } from 'antd'
 
 const { Paragraph, Text } = Typography
+
 const PageError = message => {
   return (
     <Result
-      status="error"
-      title="Page Error"
+      status="500"
+      title="Sorry, something wrong in server"
       subTitle="Please click button Refresh to reload page."
       extra={[
-        <Button type="primary" key="refresh" onClick={window.location.reload}>
+        <Button type="primary" key="refresh" onClick={() => window.location.reload()}>
           Refresh
         </Button>,
       ]}
@@ -18,7 +19,7 @@ const PageError = message => {
         <div className="desc">
           <Paragraph>
             <Text strong style={{ fontSize: 16 }}>
-              The content has the following error:
+              The content has the following error
             </Text>
           </Paragraph>
           <Paragraph>

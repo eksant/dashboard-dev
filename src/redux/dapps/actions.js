@@ -1,8 +1,5 @@
-import config from '../../config'
 import { api } from '../../utils'
 import { DAPPS_FORM, DAPPS_LOADING, DAPPS_ERROR, DAPPS_SUCCESS } from './actionType'
-
-const hostapi = config.api
 
 const dappsForm = () => ({
   type: DAPPS_FORM,
@@ -49,14 +46,21 @@ export const getDapps = (page = 1) => {
     dispatch(dappsLoading())
     try {
       return api
-        .get(`${hostapi.dapps}/dapps/containers`)
-        .then(datas => {
-          console.log('==datas', datas)
-
-          dispatch(dappsSuccess({ datas }))
+        .get('dapps')
+        .then(resp => {
+          const { success, message, data } = resp
+          if (success) {
+            const datas = data.map((item, idx) => {
+              item.key = idx + 1
+              return item
+            })
+            dispatch(dappsSuccess({ datas }))
+          } else {
+            dispatch(dappsError({ message }))
+          }
         })
         .catch(error => {
-          dispatch(dappsError(error.message))
+          dispatch(dappsError({ message: error.message }))
         })
     } catch (error) {
       console.error('Error Get Dapps: ', error)
@@ -66,84 +70,50 @@ export const getDapps = (page = 1) => {
 
 export const getDappById = id => {
   return async dispatch => {
-    dispatch(dappsForm())
+    dispatch(dappsLoading())
     try {
       return api
-        .get(`${hostapi.dapps}/dapps/containers`)
-        .then(async resp => {
+        .get(`dapps/${id}`)
+        .then(resp => {
           const { success, message, data } = resp
-
           if (success) {
             dispatch(dappsSuccess({ data }))
           } else {
-            dispatch(dappsError(message))
+            dispatch(dappsError({ message }))
           }
         })
         .catch(error => {
-          dispatch(dappsError(error.message))
+          dispatch(dappsError({ message: error.message }))
         })
     } catch (error) {
-      console.error('Error Get Dapp: ', error)
+      console.error('Error Get Dapp By ID: ', error)
     }
   }
 }
 
 export const createDapp = payload => {
-  return async dispatch => {
-    dispatch(dappsLoading())
+  return () => {
     try {
+      if (!payload) payload = {}
       return api
-        .post(`${hostapi.dapps}/dapps/create`, payload)
-        .then(resp => {
-          dispatch(dappsSuccess({ loading: false }))
-          return Promise.resolve(resp)
-        })
-        .catch(error => {
-          dispatch(dappsError(error.message))
-          return Promise.reject(error.message)
-        })
+        .post('dapps', payload)
+        .then(resp => Promise.resolve(resp))
+        .catch(error => Promise.reject({ message: error }))
     } catch (error) {
-      console.error('Error Create Dapps: ', error)
-    }
-  }
-}
-
-export const updateDapp = (id, payload) => {
-  return async dispatch => {
-    dispatch(dappsLoading())
-    try {
-      return api
-        .put(`${hostapi.dapps}/dapps/create`, payload)
-        .then(resp => {
-          dispatch(dappsSuccess({ loading: false }))
-          return Promise.resolve(resp)
-        })
-        .catch(error => {
-          dispatch(dappsError(error.message))
-          return Promise.reject(error.message)
-        })
-    } catch (error) {
-      console.error('Error Update Dapps: ', error)
+      console.error('Error Create Dapp: ', error)
     }
   }
 }
 
 export const deleteDapp = id => {
-  return async dispatch => {
-    dispatch(dappsLoading())
+  return () => {
     try {
       return api
-        .del(`${hostapi.dapps}/dapps/create`)
-        .then(resp => {
-          dispatch(dappsSuccess({ loading: false }))
-          return Promise.resolve(resp)
-        })
-        .catch(error => {
-          dispatch(dappsError(error.message))
-          return Promise.reject(error.message)
-        })
+        .del(`dapps/${id}`)
+        .then(resp => Promise.resolve(resp))
+        .catch(error => Promise.reject({ message: error }))
     } catch (error) {
-      console.error('Error Delete Dapps: ', error)
+      console.error('Error Delete Dapp: ', error)
     }
   }
 }

@@ -5,7 +5,7 @@ import React, { PureComponent } from 'react'
 import { Dashboard } from '../../pages'
 // import { getDashboard } from '../../redux/actions';
 
-class DashboardUser extends PureComponent {
+class DashboardDev extends PureComponent {
   componentDidMount() {
     this.onRefresh()
   }
@@ -20,7 +20,7 @@ class DashboardUser extends PureComponent {
   }
 }
 
-export default DashboardUser
+export default DashboardDev
 
 // const mapStateToProps = state => {
 //   return { dashboard: state.dashboard }

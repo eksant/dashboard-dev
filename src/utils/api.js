@@ -1,20 +1,20 @@
 import store from './store'
-// import config from '../config'
+import config from '../config'
 import { decrypt } from './util'
 
-// const hostApi = config.api
+const hostapi = config.api.pfalfa
 const pubkey = decrypt(store.get('pubkey'))
 const headerOptions = {
   Accept: 'application/json',
   'Content-Type': 'application/json; charset=utf-8',
 }
 
-async function get(hostapi, headerAuth = true) {
+async function get(endpoint, headerAuth = true) {
   if (headerAuth) {
     headerOptions.Authorization = pubkey
   }
 
-  return fetch(hostapi, {
+  return fetch(`${hostapi}/${endpoint}`, {
     method: 'GET',
     // credentials: 'same-origin',
     headers: headerOptions,
@@ -24,12 +24,12 @@ async function get(hostapi, headerAuth = true) {
     .catch(error => error)
 }
 
-async function post(hostapi, payload, headerAuth = true) {
+async function post(endpoint, payload, headerAuth = true) {
   if (headerAuth) {
     headerOptions.Authorization = pubkey
   }
 
-  return fetch(hostapi, {
+  return fetch(`${hostapi}/${endpoint}`, {
     method: 'POST',
     // credentials: 'same-origin',
     headers: headerOptions,
@@ -40,12 +40,12 @@ async function post(hostapi, payload, headerAuth = true) {
     .catch(error => error)
 }
 
-async function put(hostapi, payload, headerAuth = true) {
+async function put(endpoint, payload, headerAuth = true) {
   if (headerAuth) {
     headerOptions.Authorization = pubkey
   }
 
-  return fetch(hostapi, {
+  return fetch(`${hostapi}/${endpoint}`, {
     method: 'PUT',
     // credentials: 'same-origin',
     headers: headerOptions,
@@ -56,12 +56,12 @@ async function put(hostapi, payload, headerAuth = true) {
     .catch(error => error)
 }
 
-async function del(hostapi, headerAuth = true) {
+async function del(endpoint, headerAuth = true) {
   if (headerAuth) {
     headerOptions.Authorization = pubkey
   }
 
-  return fetch(hostapi, {
+  return fetch(`${hostapi}/${endpoint}`, {
     method: 'DELETE',
     // credentials: 'same-origin',
     headers: headerOptions,
