@@ -8,20 +8,10 @@ const sides = [
     childs: [{ name: 'User', path: '/users', icon: 'link', roles: ['Superadmin'] }],
   },
   {
-    name: 'Dapps',
+    name: 'DApps',
     path: '/dapps',
     icon: 'global',
     roles: ['Developer'],
-  },
-  {
-    name: 'Manage DApps',
-    path: '/manage-dapp',
-    icon: 'global',
-    roles: ['Superadmin', 'Developer'],
-    childs: [
-      { name: 'Domains Name', path: '/domains', icon: 'link', roles: ['Superadmin', 'Developer'] },
-      { name: 'File Storages', path: '/storages', icon: 'cloud', roles: ['Superadmin', 'Developer'] },
-    ],
   },
 ]
 

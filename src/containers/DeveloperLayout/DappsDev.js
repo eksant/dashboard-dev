@@ -8,6 +8,8 @@ import { DappsList, DappsForm } from '../../pages'
 import { setNewDapp, getDapps, getDappById, createDapp, deleteDapp } from '../../redux/actions'
 
 class DappsDev extends PureComponent {
+  state = { current: 0 }
+
   componentDidMount() {
     const { page } = this.props
     if (page === 'new') {
@@ -84,6 +86,14 @@ class DappsDev extends PureComponent {
     }
   }
 
+  onCreateDapp = async payload => {
+    if (payload) {
+      this.props.createDapp(payload).then(resp => {
+        console.log('==resp', resp)
+      })
+    }
+  }
+
   onDeleteData = async id => {
     if (id) {
       this.props.deleteDapp(id).then(resp => {
@@ -101,6 +111,7 @@ class DappsDev extends PureComponent {
   }
 
   render() {
+    const { current } = this.state
     const { dapps, page } = this.props
     const { skeleton, loading, error, message, data, datas, paginate } = dapps
 
@@ -120,11 +131,12 @@ class DappsDev extends PureComponent {
         {...this.props}
         data={data}
         error={error}
+        current={current}
         loading={loading}
         message={message}
         skeleton={skeleton}
         onBack={this.onBack.bind(this)}
-        onSubmitData={values => this.onSubmitData(values)}
+        onCreateDapp={values => this.onCreateDapp(values)}
       />
     )
   }

@@ -92,13 +92,25 @@ export const getDappById = id => {
 }
 
 export const createDapp = payload => {
-  return () => {
+  return dispatch => {
+    dispatch(dappsLoading())
     try {
       if (!payload) payload = {}
       return api
         .post('dapps', payload)
-        .then(resp => Promise.resolve(resp))
-        .catch(error => Promise.reject({ message: error }))
+        .then(resp => {
+          const { success, message, data } = resp
+          if (!success) {
+            dispatch(dappsError({ message }))
+          } else {
+            dispatch(dappsSuccess({ data }))
+          }
+          return Promise.resolve(resp)
+        })
+        .catch(error => {
+          dispatch(dappsError({ message: error }))
+          return Promise.reject({ message: error })
+        })
     } catch (error) {
       console.error('Error Create Dapp: ', error)
     }

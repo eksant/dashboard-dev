@@ -7,7 +7,7 @@ export const layoutForm = {
     xs: { span: 24 },
     sm: { span: 18 },
   },
-};
+}
 
 export const layoutFormFull = {
   labelCol: {
@@ -18,7 +18,7 @@ export const layoutFormFull = {
     xs: { span: 24 },
     sm: { span: 21 },
   },
-};
+}
 
 export const layoutButton = {
   wrapperCol: {
@@ -31,4 +31,17 @@ export const layoutButton = {
       offset: 3,
     },
   },
-};
+}
+
+export const layoutButtonRight = {
+  wrapperCol: {
+    xs: {
+      span: 24,
+      offset: 0,
+    },
+    sm: {
+      span: 5,
+      offset: 19,
+    },
+  },
+}

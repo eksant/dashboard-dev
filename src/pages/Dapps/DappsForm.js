@@ -1,77 +1,156 @@
-import React from 'react'
-import { Card, Form, Skeleton, Input, InputNumber, Radio, Row, Col, Button } from 'antd'
+import React, { Fragment } from 'react'
+import { Card, Steps, Button, Input, Form, Select, Skeleton, Alert, Row, Col, Upload, Icon, Result } from 'antd'
 
-import PageError from '../PageError'
-import { layoutForm, layoutButton } from '../../utils'
+import { layoutForm, layoutButtonRight, layoutFormFull } from '../../utils'
+
+const { Dragger } = Upload
+const { Step } = Steps
+const steps = [
+  {
+    title: 'DApp Detail',
+    content: 'Detail',
+  },
+  {
+    title: 'Upload Website',
+    content: 'Upload',
+  },
+  {
+    title: 'Done',
+    content: 'Done',
+  },
+]
 
 const DappsForm = props => {
-  const { title, form } = props
+  const { form } = props
   const { getFieldDecorator } = form
-  const { skeleton, loading, error, message, data } = props
+  const { skeleton, loading, error, message, current, data } = props
+  const { onCreateDapp } = props
+
+  const propsUpload = {
+    name: 'file',
+    multiple: true,
+    action: 'https://www.mocky.io/v2/5cc8019d300000980a055e76',
+    onChange(info) {
+      const { status } = info.file
+      if (status !== 'uploading') {
+        console.log(info.file, info.fileList)
+      }
+      if (status === 'done') {
+        console.log(`${info.file.name} file uploaded successfully.`)
+      } else if (status === 'error') {
+        console.error(`${info.file.name} file upload failed.`)
+      }
+    },
+  }
 
   const onSubmit = e => {
     e.preventDefault()
     form.validateFieldsAndScroll((err, values) => {
       if (!err) {
-        props.onSubmitData(values)
+        switch (current) {
+          case 0:
+            onCreateDapp(values)
+            break
+          case 1:
+            // this.onPayment()
+            break
+          default:
+            break
+        }
       }
     })
   }
 
   return (
-    <Card title={<h3>{title}</h3>} size="small">
-      {error ? (
-        <PageError message={message} />
-      ) : (
-        <Skeleton active title={false} paragraph={{ rows: 5 }} size="small" loading={skeleton}>
-          <Form onSubmit={onSubmit}>
-            <Row>
-              <Col span={12}>
-                <Form.Item label="Host Name" {...layoutForm}>
-                  {getFieldDecorator('hostname', {
-                    initialValue: data && data.hostname,
-                    rules: [{ required: true, message: 'Please input  hostname!' }],
-                  })(<Input placeholder="Input host name.." />)}
-                </Form.Item>
-                <Form.Item label="Port" {...layoutForm}>
-                  {getFieldDecorator('port', {
-                    initialValue: data && data.port,
-                    rules: [{ required: true, message: 'Please input port!' }],
-                  })(<InputNumber placeholder="Input port.." style={{ width: '100%' }} />)}
-                </Form.Item>
-              </Col>
-              <Col span={12}>
-                <Form.Item label="Domain Name" {...layoutForm}>
-                  {getFieldDecorator('domainname', {
-                    initialValue: data && data.domainname,
-                    rules: [{ required: true, message: 'Please input domainname!' }],
-                  })(<Input placeholder="Input domain name.." />)}
-                </Form.Item>
-                <Form.Item label="Status" {...layoutForm}>
-                  {getFieldDecorator('status', {
-                    initialValue: data && data.status,
-                    rules: [{ required: true, message: 'Please choose status!' }],
-                  })(
-                    <Radio.Group>
-                      <Radio value={true}>Active</Radio>
-                      <Radio value={false}>Inactive</Radio>
-                    </Radio.Group>
-                  )}
-                </Form.Item>
-              </Col>
-            </Row>
+    <Card>
+      <Form onSubmit={onSubmit}>
+        <Steps current={current} style={{ marginBottom: '20px' }}>
+          {steps.map(item => (
+            <Step key={item.title} title={item.title} />
+          ))}
+        </Steps>
 
-            <Form.Item {...layoutButton}>
-              <Button loading={loading} disabled={loading || error} type="primary" htmlType="submit">
-                Save
-              </Button>
-              <Button className="margin-buttons" onClick={props.onBack}>
-                Back
-              </Button>
-            </Form.Item>
-          </Form>
-        </Skeleton>
-      )}
+        {error && message && <Alert description={message} type="error" showIcon closable />}
+
+        <Row style={{ marginTop: '20px' }}>
+          <Skeleton paragraph={{ rows: 2 }} active loading={skeleton}>
+            {steps[current].content === 'Detail' ? (
+              <Fragment>
+                <Col span={12}>
+                  <Form.Item label="Dapp Name" {...layoutForm}>
+                    {getFieldDecorator('pod_name', {
+                      initialValue: data && data.pod_name,
+                      rules: [{ required: true, message: 'Please input dapp name!' }],
+                    })(<Input placeholder="Input dapp name.." />)}
+                  </Form.Item>
+                </Col>
+                <Col span={12}>
+                  <Form.Item label="Category" {...layoutForm}>
+                    {getFieldDecorator('category', {
+                      initialValue: data && data.category,
+                      rules: [{ required: true, message: 'Please select one!' }],
+                    })(
+                      <Select
+                        showSearch
+                        style={{ width: '100%' }}
+                        placeholder="Select one.."
+                        optionFilterProp="children"
+                        filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                      >
+                        <Select.Option key="High-Rish">High-Rish</Select.Option>
+                        <Select.Option key="Game">Game</Select.Option>
+                        <Select.Option key="Gambling">Gambling</Select.Option>
+                        <Select.Option key="Exchange">Exchange</Select.Option>
+                        <Select.Option key="Finance">Finance</Select.Option>
+                        <Select.Option key="Social">Social</Select.Option>
+                        <Select.Option key="Art">Art</Select.Option>
+                        <Select.Option key="Tools">Tools</Select.Option>
+                        <Select.Option key="Others">Others</Select.Option>
+                      </Select>
+                    )}
+                  </Form.Item>
+                </Col>
+
+                <Col span={24}>
+                  <Form.Item label="Description" {...layoutFormFull}>
+                    {getFieldDecorator('description', {
+                      initialValue: data && data.description,
+                      rules: [{ required: false, message: 'Please input description!' }],
+                    })(<Input.TextArea rows={6} placeholder="Input description.." />)}
+                  </Form.Item>
+                </Col>
+              </Fragment>
+            ) : steps[current].content === 'Upload' ? (
+              <Dragger {...propsUpload} style={{ marginBottom: '20px' }}>
+                <p className="ant-upload-drag-icon">
+                  <Icon type="inbox" />
+                </p>
+                <p className="ant-upload-text">Click or drag file to this area to upload</p>
+                <p className="ant-upload-hint">
+                  Support for a single or bulk upload. Strictly prohibit from uploading company data or other band files
+                </p>
+              </Dragger>
+            ) : (
+              <Result
+                status="success"
+                title="Successfully Created DApp!"
+                subTitle="Cloud server configuration takes 1-5 minutes, please wait..."
+              />
+            )}
+          </Skeleton>
+        </Row>
+
+        <Form.Item {...layoutButtonRight} style={{ textAlign: 'right' }}>
+          {current < steps.length - 1 && (
+            <Button loading={loading} disabled={loading || error} type="primary" htmlType="submit">
+              {current === 0 ? 'Create Dapp' : 'Upload Website'}
+            </Button>
+          )}
+          <Button className="margin-buttons" onClick={props.onBack}>
+            Back To List
+          </Button>
+        </Form.Item>
+      </Form>
     </Card>
   )
 }
