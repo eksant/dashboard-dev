@@ -7,11 +7,11 @@ const { Dragger } = Upload
 const { Step } = Steps
 const steps = [
   {
-    title: 'DApp Detail',
+    title: 'DApp Info',
     content: 'Detail',
   },
   {
-    title: 'Upload Website',
+    title: 'Upload DApp',
     content: 'Upload',
   },
   {
@@ -29,7 +29,7 @@ const DappsForm = props => {
   const propsUpload = {
     name: 'file',
     multiple: true,
-    action: 'https://www.mocky.io/v2/5cc8019d300000980a055e76',
+    action: 'http://206.189.32.43:8081/ipfs/add',
     onChange(info) {
       const { status } = info.file
       if (status !== 'uploading') {
@@ -140,9 +140,9 @@ const DappsForm = props => {
           </Skeleton>
         </Row>
 
-        <Form.Item {...layoutButtonRight} style={{ textAlign: 'right' }}>
+        <Form.Item {...layoutButtonRight} style={{ textAlign: 'right', marginTop: '10px' }}>
           {current < steps.length - 1 && (
-            <Button loading={loading} disabled={loading || error} type="primary" htmlType="submit">
+            <Button loading={loading} disabled={loading} type="primary" htmlType="submit">
               {current === 0 ? 'Create Dapp' : 'Upload Website'}
             </Button>
           )}

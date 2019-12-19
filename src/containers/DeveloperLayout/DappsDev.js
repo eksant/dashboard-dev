@@ -89,7 +89,17 @@ class DappsDev extends PureComponent {
   onCreateDapp = async payload => {
     if (payload) {
       this.props.createDapp(payload).then(resp => {
-        console.log('==resp', resp)
+        const { success, message, data } = resp
+        if (success) {
+          notification['success']({
+            message: 'Application Message',
+            description: message,
+            style: { top: '30px' },
+          })
+
+          const current = this.state.current + 1
+          this.setState({ current })
+        }
       })
     }
   }

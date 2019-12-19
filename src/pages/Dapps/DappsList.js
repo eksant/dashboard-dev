@@ -1,7 +1,7 @@
 import React from 'react'
 import moment from 'moment'
 import { Link } from 'react-router-dom'
-import { Card, Table, Divider, Button, Icon, Popconfirm } from 'antd'
+import { Card, Table, Divider, Button, Icon, Tag, Popconfirm } from 'antd'
 
 import PageError from '../PageError'
 
@@ -16,20 +16,35 @@ const DappsList = props => {
       dataIndex: 'key',
     },
     {
+      title: 'Dapp UID',
+      dataIndex: 'dappUid',
+    },
+    {
       title: 'Dapp Name',
       dataIndex: 'name',
     },
     {
-      title: 'IP Address',
-      dataIndex: 'hostIP',
+      title: 'IP Local',
+      dataIndex: 'IpLocal',
+    },
+    {
+      title: 'IP Public',
+      dataIndex: 'IpPublic',
     },
     {
       title: 'Port',
       dataIndex: 'port',
     },
     {
-      title: 'Dapp UID',
-      dataIndex: 'dappUid',
+      title: 'Status',
+      render: record => {
+        const color = record.phase === 'Running' ? 'green' : 'magenta'
+        return (
+          <Tag color={color} size="small">
+            {record.phase}
+          </Tag>
+        )
+      },
     },
     {
       title: 'Created At',
@@ -42,7 +57,7 @@ const DappsList = props => {
         return (
           <span>
             <Link to={`upload/${record.id}`}>
-              <Button type="link" icon="cloud-upload" size="small">
+              <Button type="link" icon="cloud-upload" size="small" disabled>
                 Upload
               </Button>
             </Link>
