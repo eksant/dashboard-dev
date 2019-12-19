@@ -36,60 +36,10 @@ class DappsDev extends PureComponent {
     await history.push(basePath(path))
   }
 
-  onSubmitData = async payload => {
-    if (payload) {
-      const { data } = this.props.product
-      const item = {
-        ...payload,
-        imgUrl:
-          payload.imgUrl && typeof payload.imgUrl === 'string'
-            ? payload.imgUrl
-            : payload.imgUrl.fileList.length > 0
-            ? payload.imgUrl.fileList[0].url
-            : null,
-      }
-
-      if (item.priceActual && item.priceSell && parseFloat(item.priceActual) > parseFloat(item.priceSell)) {
-        notification['warning']({
-          message: 'Application Message',
-          description: 'Price sell must be greater than cost of goods sold',
-          style: { top: '30px' },
-        })
-        return
-      }
-
-      if (!data) {
-        this.props.createProduct(item).then(resp => {
-          notification[resp.success ? 'success' : 'warning']({
-            message: 'Application Message',
-            description: resp.message,
-            style: { top: '30px' },
-          })
-          if (resp.success) {
-            this.onBack()
-          }
-        })
-      } else {
-        const id = data._id
-        this.props.updateProduct(id, item).then(resp => {
-          notification[resp && resp.success ? 'success' : 'warning']({
-            message: 'Application Message',
-            description: resp && resp.message,
-            style: { top: '30px' },
-          })
-
-          if (resp.success) {
-            this.onBack()
-          }
-        })
-      }
-    }
-  }
-
   onCreateDapp = async payload => {
     if (payload) {
       this.props.createDapp(payload).then(resp => {
-        const { success, message, data } = resp
+        const { success, message } = resp
         if (success) {
           notification['success']({
             message: 'Application Message',
