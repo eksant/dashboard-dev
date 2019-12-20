@@ -1,6 +1,7 @@
 import React, { Fragment } from 'react'
 import { Card, Steps, Button, Input, Form, Select, Skeleton, Alert, Row, Col, Upload, Icon, Result } from 'antd'
 
+// import config from '../../config'
 import { layoutForm, layoutButtonRight, layoutFormFull } from '../../utils'
 
 const { Dragger } = Upload
@@ -24,24 +25,25 @@ const DappsForm = props => {
   const { form } = props
   const { getFieldDecorator } = form
   const { skeleton, loading, error, message, current, data } = props
-  const { onCreateDapp } = props
+  const { onSkipDapp, onCreateDapp, onUploadDapp } = props
+  const propsUpload = onUploadDapp()
 
-  const propsUpload = {
-    name: 'file',
-    multiple: true,
-    action: 'http://206.189.32.43:8081/ipfs/add',
-    onChange(info) {
-      const { status } = info.file
-      if (status !== 'uploading') {
-        console.log(info.file, info.fileList)
-      }
-      if (status === 'done') {
-        console.log(`${info.file.name} file uploaded successfully.`)
-      } else if (status === 'error') {
-        console.error(`${info.file.name} file upload failed.`)
-      }
-    },
-  }
+  // const propsUpload = {
+  //   name: 'file',
+  //   multiple: true,
+  //   action: `${config.api.dapps}/ipfs/add`,
+  //   onChange(info) {
+  //     const { status } = info.file
+  //     if (status !== 'uploading') {
+  //       console.log(info.file, info.fileList)
+  //     }
+  //     if (status === 'done') {
+  //       console.log(`${info.file.name} file uploaded successfully.`)
+  //     } else if (status === 'error') {
+  //       console.error(`${info.file.name} file upload failed.`)
+  //     }
+  //   },
+  // }
 
   const onSubmit = e => {
     e.preventDefault()
@@ -52,7 +54,7 @@ const DappsForm = props => {
             onCreateDapp(values)
             break
           case 1:
-            // this.onPayment()
+            onSkipDapp()
             break
           default:
             break
@@ -143,7 +145,7 @@ const DappsForm = props => {
         <Form.Item {...layoutButtonRight} style={{ textAlign: 'right', marginTop: '10px' }}>
           {current < steps.length - 1 && (
             <Button loading={loading} disabled={loading} type="primary" htmlType="submit">
-              {current === 0 ? 'Create Dapp' : 'Upload Website'}
+              {current === 0 ? 'Create Dapp' : 'Skip'}
             </Button>
           )}
           <Button className="margin-buttons" onClick={props.onBack}>

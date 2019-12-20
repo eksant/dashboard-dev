@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { notification } from 'antd'
 
+import config from '../../config'
 import { basePath } from '../../utils'
 import { DappsList, DappsForm } from '../../pages'
 import { setNewDapp, getDapps, getDappById, createDapp, deleteDapp } from '../../redux/actions'
@@ -36,6 +37,11 @@ class DappsDev extends PureComponent {
     await history.push(basePath(path))
   }
 
+  onSkipDapp = () => {
+    const current = this.state.current + 1
+    this.setState({ current })
+  }
+
   onCreateDapp = async payload => {
     if (payload) {
       this.props.createDapp(payload).then(resp => {
@@ -51,6 +57,37 @@ class DappsDev extends PureComponent {
           this.setState({ current })
         }
       })
+    }
+  }
+
+  onUploadDapp = () => {
+    return {
+      name: 'file',
+      multiple: true,
+      action: `${config.api.dapps}/ipfs/add`,
+      onChange(info) {
+        const { status } = info.file
+        if (status !== 'uploading') {
+          console.log(info.file, info.fileList)
+        }
+
+        if (status === 'done') {
+          notification['warning']({
+            message: 'Application Message',
+            description: `${info.file.name} file uploaded successfully.`,
+            style: { top: '30px' },
+          })
+
+          const current = this.state.current + 1
+          this.setState({ current })
+        } else if (status === 'error') {
+          notification['warning']({
+            message: 'Application Message',
+            description: `${info.file.name} file upload failed.`,
+            style: { top: '30px' },
+          })
+        }
+      },
     }
   }
 
@@ -96,6 +133,8 @@ class DappsDev extends PureComponent {
         message={message}
         skeleton={skeleton}
         onBack={this.onBack.bind(this)}
+        onSkipDapp={this.onSkipDapp.bind(this)}
+        onUploadDapp={this.onUploadDapp.bind(this)}
         onCreateDapp={values => this.onCreateDapp(values)}
       />
     )
