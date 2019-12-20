@@ -42,21 +42,25 @@ export const setDapp = payload => {
 }
 
 export const getDapps = (page = 1) => {
-  return async dispatch => {
+  return dispatch => {
     dispatch(dappsLoading())
     try {
       return api
         .get('dapps')
         .then(resp => {
-          const { success, message, data } = resp
-          if (success) {
-            const datas = data.map((item, idx) => {
-              item.key = idx + 1
-              return item
-            })
-            dispatch(dappsSuccess({ datas }))
+          if (resp && resp.success && resp.data) {
+            const { success, message, data } = resp
+            if (success) {
+              const datas = data.map((item, idx) => {
+                item.key = idx + 1
+                return item
+              })
+              dispatch(dappsSuccess({ datas }))
+            } else {
+              dispatch(dappsError({ message }))
+            }
           } else {
-            dispatch(dappsError({ message }))
+            dispatch(dappsError({ message: resp.message }))
           }
         })
         .catch(error => {

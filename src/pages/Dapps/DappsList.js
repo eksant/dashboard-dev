@@ -95,7 +95,7 @@ const DappsList = props => {
       {error ? (
         <PageError message={message} />
       ) : (
-        <Table columns={columns} dataSource={datas} loading={loading} pagination={false} size={'small'} />
+        <Table columns={columns} dataSource={datas} loading={loading} pagination={true} size={'small'} />
       )}
     </Card>
   )

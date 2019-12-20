@@ -3,7 +3,7 @@ import { Result, Button, Icon, Typography } from 'antd'
 
 const { Paragraph, Text } = Typography
 
-const PageError = message => {
+const PageError = ({ message }) => {
   return (
     <Result
       status="500"

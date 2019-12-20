@@ -1,13 +1,8 @@
-import config from '../config';
-import store from './store';
+import config from '../config'
 
-const hostApi = config.hostApi;
-const bearerToken = `Bearer ${store.get('token-access')}`;
+const upload = () => ({
+  name: 'file',
+  action: `${config.api.dapps}/ipfs/add`,
+})
 
-const upload = (endpoint, name) => ({
-  name: name,
-  action: `${hostApi}/upload/${endpoint}`,
-  headers: { Authorization: bearerToken },
-});
-
-export default upload;
+export default upload

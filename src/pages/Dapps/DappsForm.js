@@ -1,7 +1,6 @@
-import React, { Fragment } from 'react'
-import { Card, Steps, Button, Input, Form, Select, Skeleton, Alert, Row, Col, Upload, Icon, Result } from 'antd'
+import React from 'react'
+import { Card, Steps, Button, Input, Form, Select, Skeleton, Alert, Row, Col, Upload, Icon, Result, Spin } from 'antd'
 
-// import config from '../../config'
 import { layoutForm, layoutButtonRight, layoutFormFull } from '../../utils'
 
 const { Dragger } = Upload
@@ -27,23 +26,6 @@ const DappsForm = props => {
   const { skeleton, loading, error, message, current, data } = props
   const { onSkipDapp, onCreateDapp, onUploadDapp } = props
   const propsUpload = onUploadDapp()
-
-  // const propsUpload = {
-  //   name: 'file',
-  //   multiple: true,
-  //   action: `${config.api.dapps}/ipfs/add`,
-  //   onChange(info) {
-  //     const { status } = info.file
-  //     if (status !== 'uploading') {
-  //       console.log(info.file, info.fileList)
-  //     }
-  //     if (status === 'done') {
-  //       console.log(`${info.file.name} file uploaded successfully.`)
-  //     } else if (status === 'error') {
-  //       console.error(`${info.file.name} file upload failed.`)
-  //     }
-  //   },
-  // }
 
   const onSubmit = e => {
     e.preventDefault()
@@ -77,7 +59,7 @@ const DappsForm = props => {
         <Row style={{ marginTop: '20px' }}>
           <Skeleton paragraph={{ rows: 2 }} active loading={skeleton}>
             {steps[current].content === 'Detail' ? (
-              <Fragment>
+              <Spin size="large" spinning={loading} tip="Please wait, DApp configuration takes 20-35 seconds...">
                 <Col span={12}>
                   <Form.Item label="Dapp Name" {...layoutForm}>
                     {getFieldDecorator('pod_name', {
@@ -121,7 +103,7 @@ const DappsForm = props => {
                     })(<Input.TextArea rows={6} placeholder="Input description.." />)}
                   </Form.Item>
                 </Col>
-              </Fragment>
+              </Spin>
             ) : steps[current].content === 'Upload' ? (
               <Dragger {...propsUpload} style={{ marginBottom: '20px' }}>
                 <p className="ant-upload-drag-icon">

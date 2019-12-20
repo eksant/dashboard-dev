@@ -65,6 +65,10 @@ class DappsDev extends PureComponent {
       name: 'file',
       multiple: true,
       action: `${config.api.dapps}/ipfs/add`,
+      // action: 'http://206.189.32.43:8081',
+      // action: 'https://www.mocky.io/v2/5cc8019d300000980a055e76',
+      // headers: { 'Content-Type': 'multipart/form-data;' },
+      // headers: { authorization: 'authorization-text', 'content-type': 'multipart/form-data; boundary=ebf9f03029db4c2799ae16b5428b06bd' },
       onChange(info) {
         const { status } = info.file
         if (status !== 'uploading') {
@@ -78,8 +82,8 @@ class DappsDev extends PureComponent {
             style: { top: '30px' },
           })
 
-          const current = this.state.current + 1
-          this.setState({ current })
+          // const current = this.state.current + 1
+          // this.setState({ current })
         } else if (status === 'error') {
           notification['warning']({
             message: 'Application Message',
