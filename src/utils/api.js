@@ -2,7 +2,8 @@ import store from './store'
 import config from '../config'
 import { decrypt } from './util'
 
-const hostapi = config.api.pfalfa
+const apiPfalfa = config.api.pfalfa
+const apiDapps = config.api.dapps
 const pubkey = decrypt(store.get('pubkey'))
 const headerOptions = {
   Accept: 'application/json',
@@ -14,7 +15,7 @@ async function get(endpoint, headerAuth = true) {
     headerOptions.Authorization = pubkey
   }
 
-  return fetch(`${hostapi}/${endpoint}`, {
+  return fetch(`${apiPfalfa}/${endpoint}`, {
     method: 'GET',
     // credentials: 'same-origin',
     headers: headerOptions,
@@ -29,7 +30,7 @@ async function post(endpoint, payload, headerAuth = true) {
     headerOptions.Authorization = pubkey
   }
 
-  return fetch(`${hostapi}/${endpoint}`, {
+  return fetch(`${apiPfalfa}/${endpoint}`, {
     method: 'POST',
     // credentials: 'same-origin',
     headers: headerOptions,
@@ -45,7 +46,7 @@ async function put(endpoint, payload, headerAuth = true) {
     headerOptions.Authorization = pubkey
   }
 
-  return fetch(`${hostapi}/${endpoint}`, {
+  return fetch(`${apiPfalfa}/${endpoint}`, {
     method: 'PUT',
     // credentials: 'same-origin',
     headers: headerOptions,
@@ -61,7 +62,7 @@ async function del(endpoint, headerAuth = true) {
     headerOptions.Authorization = pubkey
   }
 
-  return fetch(`${hostapi}/${endpoint}`, {
+  return fetch(`${apiPfalfa}/${endpoint}`, {
     method: 'DELETE',
     // credentials: 'same-origin',
     headers: headerOptions,
@@ -71,11 +72,23 @@ async function del(endpoint, headerAuth = true) {
     .catch(error => error)
 }
 
+async function uploadDapp(endpoint, files) {
+  const datas = new FormData()
+  datas.append('file', files)
+
+  return fetch(`${apiDapps}/${endpoint}`, {
+    method: 'POST',
+    credentials: 'same-origin',
+    body: datas,
+  })
+}
+
 const api = {
   get,
   post,
   put,
   del,
+  uploadDapp,
 }
 
 export default api

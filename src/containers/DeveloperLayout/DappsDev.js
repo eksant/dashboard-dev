@@ -3,8 +3,7 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { notification } from 'antd'
 
-import config from '../../config'
-import { basePath } from '../../utils'
+import { basePath, api } from '../../utils'
 import { DappsList, DappsForm } from '../../pages'
 import { setNewDapp, getDapps, getDappById, createDapp, deleteDapp } from '../../redux/actions'
 
@@ -64,33 +63,11 @@ class DappsDev extends PureComponent {
     return {
       name: 'file',
       multiple: true,
-      action: `${config.api.dapps}/ipfs/add`,
-      // action: 'http://206.189.32.43:8081',
-      // action: 'https://www.mocky.io/v2/5cc8019d300000980a055e76',
-      // headers: { 'Content-Type': 'multipart/form-data;' },
-      // headers: { authorization: 'authorization-text', 'content-type': 'multipart/form-data; boundary=ebf9f03029db4c2799ae16b5428b06bd' },
-      onChange(info) {
-        const { status } = info.file
-        if (status !== 'uploading') {
-          console.log(info.file, info.fileList)
-        }
-
-        if (status === 'done') {
-          notification['warning']({
-            message: 'Application Message',
-            description: `${info.file.name} file uploaded successfully.`,
-            style: { top: '30px' },
-          })
-
-          // const current = this.state.current + 1
-          // this.setState({ current })
-        } else if (status === 'error') {
-          notification['warning']({
-            message: 'Application Message',
-            description: `${info.file.name} file upload failed.`,
-            style: { top: '30px' },
-          })
-        }
+      customRequest: ({ onSuccess, onError, file }) => {
+        api
+          .uploadDapp('ipfs/add', file)
+          .then(data => onSuccess(data))
+          .catch(error => onError(error))
       },
     }
   }

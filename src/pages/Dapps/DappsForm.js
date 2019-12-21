@@ -105,11 +105,11 @@ const DappsForm = props => {
                 </Col>
               </Spin>
             ) : steps[current].content === 'Upload' ? (
-              <Dragger {...propsUpload} style={{ marginBottom: '20px' }}>
+              <Dragger {...propsUpload} style={{ marginBottom: '20px' }} directory>
                 <p className="ant-upload-drag-icon">
                   <Icon type="inbox" />
                 </p>
-                <p className="ant-upload-text">Click or drag file to this area to upload</p>
+                <p className="ant-upload-text">Click or drag file/directory to this area to upload</p>
                 <p className="ant-upload-hint">
                   Support for a single or bulk upload. Strictly prohibit from uploading company data or other band files
                 </p>
@@ -127,7 +127,7 @@ const DappsForm = props => {
         <Form.Item {...layoutButtonRight} style={{ textAlign: 'right', marginTop: '10px' }}>
           {current < steps.length - 1 && (
             <Button loading={loading} disabled={loading} type="primary" htmlType="submit">
-              {current === 0 ? 'Create Dapp' : 'Skip'}
+              {current === 0 ? 'Create Dapp' : 'Skip / Next'}
             </Button>
           )}
           <Button className="margin-buttons" onClick={props.onBack}>
