@@ -105,20 +105,20 @@ const DappsForm = props => {
                 </Col>
               </Spin>
             ) : steps[current].content === 'Upload' ? (
-              <Dragger {...propsUpload} style={{ marginBottom: '20px' }} directory>
+              <Dragger {...propsUpload} style={{ marginBottom: '20px' }}>
                 <p className="ant-upload-drag-icon">
                   <Icon type="inbox" />
                 </p>
-                <p className="ant-upload-text">Click or drag file/directory to this area to upload</p>
+                <p className="ant-upload-text">Click or drag compress file to this area to upload</p>
                 <p className="ant-upload-hint">
-                  Support for a single or bulk upload. Strictly prohibit from uploading company data or other band files
+                  Just support for a compress file. Please compressing file (zip or rar) before to upload Your DApp.
                 </p>
               </Dragger>
             ) : (
               <Result
                 status="success"
                 title="Successfully Created DApp!"
-                subTitle="Cloud server configuration takes 1-5 minutes, please wait..."
+                subTitle="DApp already deploy in node Pfalfa."
               />
             )}
           </Skeleton>

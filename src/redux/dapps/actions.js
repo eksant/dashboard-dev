@@ -104,10 +104,10 @@ export const createDapp = payload => {
         .post('dapps', payload)
         .then(resp => {
           const { success, message, data } = resp
-          if (!success) {
-            dispatch(dappsError({ message }))
-          } else {
+          if (success) {
             dispatch(dappsSuccess({ data }))
+          } else {
+            dispatch(dappsError({ message }))
           }
           return Promise.resolve(resp)
         })
@@ -117,6 +117,19 @@ export const createDapp = payload => {
         })
     } catch (error) {
       console.error('Error Create Dapp: ', error)
+    }
+  }
+}
+
+export const updateDapp = (id, payload) => {
+  return () => {
+    try {
+      return api
+        .put(`dapps/${id}`, payload)
+        .then(resp => Promise.resolve(resp))
+        .catch(error => Promise.reject({ message: error }))
+    } catch (error) {
+      console.error('Error Update Dapp: ', error)
     }
   }
 }

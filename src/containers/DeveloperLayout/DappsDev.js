@@ -5,7 +5,7 @@ import { notification } from 'antd'
 
 import { basePath, api } from '../../utils'
 import { DappsList, DappsForm } from '../../pages'
-import { setNewDapp, getDapps, getDappById, createDapp, deleteDapp } from '../../redux/actions'
+import { setNewDapp, getDapps, getDappById, createDapp, updateDapp, deleteDapp } from '../../redux/actions'
 
 class DappsDev extends PureComponent {
   state = { current: 0 }
@@ -60,15 +60,48 @@ class DappsDev extends PureComponent {
   }
 
   onUploadDapp = () => {
-    return {
-      name: 'file',
-      multiple: true,
-      customRequest: ({ onSuccess, onError, file }) => {
-        api
-          .uploadDapp('ipfs/add', file)
-          .then(data => onSuccess(data))
-          .catch(error => onError(error))
-      },
+    const { data } = this.props.dapps
+    if (data) {
+      return {
+        name: 'file',
+        multiple: false,
+        accept: '.zip,.rar',
+        customRequest: ({ onSuccess, onError, file }) => {
+          api
+            .uploadDapp('ipfs/adddir', file)
+            .then(files => {
+              const file = Array.isArray(files) ? files[0] : files
+              if (file.status === 'success') {
+                onSuccess(file)
+                const payload = { ipfs_hash: file.data.hash }
+                this.props
+                  .updateDapp(data.id, payload)
+                  .then(resp => {
+                    const { success, message } = resp
+                    notification[success ? 'success' : 'warning']({
+                      message: 'Application Message',
+                      description: success ? 'Success to upload DApp' : message,
+                      style: { top: '30px' },
+                    })
+
+                    if (success) {
+                      const current = this.state.current + 1
+                      this.setState({ current })
+                    }
+                  })
+                  .catch(error => {
+                    console.error(error)
+                  })
+              } else {
+                onError(file)
+              }
+            })
+            .catch(error => onError(error))
+        },
+        // onChange(info) {
+        //   console.log('==change', info)
+        // },
+      }
     }
   }
 
@@ -126,6 +159,7 @@ const mapStateToProps = state => {
   return { dapps: state.dapps }
 }
 
-const mapDispatchToProps = dispatch => bindActionCreators({ setNewDapp, getDapps, getDappById, createDapp, deleteDapp }, dispatch)
+const mapDispatchToProps = dispatch =>
+  bindActionCreators({ setNewDapp, getDapps, getDappById, createDapp, updateDapp, deleteDapp }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(DappsDev)

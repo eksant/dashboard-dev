@@ -14,11 +14,13 @@ const DappsList = props => {
     {
       title: '#',
       dataIndex: 'key',
+      ellipsis: false,
     },
-    {
-      title: 'Dapp UID',
-      dataIndex: 'dappUid',
-    },
+    // {
+    //   title: 'Dapp UID',
+    //   dataIndex: 'dappUid',
+    //   ellipsis: true,
+    // },
     {
       title: 'Dapp Name',
       dataIndex: 'name',
@@ -34,6 +36,11 @@ const DappsList = props => {
     {
       title: 'Port',
       dataIndex: 'port',
+    },
+    {
+      title: 'Hash File',
+      dataIndex: 'ipfsHash',
+      ellipsis: false,
     },
     {
       title: 'Status',
@@ -52,6 +59,7 @@ const DappsList = props => {
       render: dappCreated => moment(dappCreated).format('DD MMM YYYY hh:mm'),
     },
     {
+      ellipsis: false,
       align: 'right',
       render: record => {
         return (
@@ -95,7 +103,18 @@ const DappsList = props => {
       {error ? (
         <PageError message={message} />
       ) : (
-        <Table columns={columns} dataSource={datas} loading={loading} pagination={true} size={'small'} />
+        <Table
+          columns={columns}
+          dataSource={datas}
+          // ellipsis={false}
+          size="small"
+          // tableLayout="fixed"
+          loading={loading}
+          pagination={true}
+          // columns={columns.map(item => {
+          //   console.log
+          //   ({ ...item, ellipsis:  true })})}
+        />
       )}
     </Card>
   )
