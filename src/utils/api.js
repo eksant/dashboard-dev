@@ -77,7 +77,6 @@ async function uploadDapp(endpoint, files) {
   datas.append('file', files)
 
   return fetch(`${apiDapps}/${endpoint}`, {
-  // return fetch(`http://206.189.32.43:8081/${endpoint}`, {
     method: 'POST',
     credentials: 'same-origin',
     body: datas,
