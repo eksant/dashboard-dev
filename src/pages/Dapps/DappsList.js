@@ -1,7 +1,7 @@
 import React from 'react'
 import moment from 'moment'
 import { Link } from 'react-router-dom'
-import { Card, Table, Button, Icon, Tag, Popconfirm } from 'antd'
+import { Card, Table, Button, Icon, Tag, Popconfirm, Divider } from 'antd'
 
 import PageError from '../PageError'
 
@@ -18,7 +18,10 @@ const DappsList = props => {
     },
     {
       title: 'Dapp Name',
-      render: record => <Link to={`/dapps/upload/${record.id}`}>{record.name}</Link>,
+      render: record => {
+        const link = record.ipfsHash ? `/dapps/upload?id=${record.id}&ipfs=${record.ipfsHash}` : `/dapps/upload?id=${record.id}`
+        return <Link to={link}>{record.name}</Link>
+      },
     },
     {
       title: 'IP Local',
@@ -52,14 +55,15 @@ const DappsList = props => {
       ellipsis: false,
       align: 'right',
       render: record => {
+        const link = record.ipfsHash ? `/dapps/upload?id=${record.id}&ipfs=${record.ipfsHash}` : `/dapps/upload?id=${record.id}`
         return (
           <span>
-            {/* <Link to={`upload/${record.id}`}>
-              <Button type="link" icon="cloud-upload" size="small" disabled>
+            <Link to={link}>
+              <Button type="link" icon="cloud-upload" size="small">
                 Upload
               </Button>
             </Link>
-            <Divider type="vertical" /> */}
+            <Divider type="vertical" />
             <Popconfirm title="Are you sure delete this record?" onConfirm={() => onDeleteData(record.id)} okText="Yes" cancelText="No">
               <Button type="link" icon="delete" className="red-color" size="small">
                 Delete

@@ -1,11 +1,12 @@
 import React, { PureComponent } from 'react'
+import queryString from 'query-string'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { notification } from 'antd'
 
 import { basePath, api } from '../../utils'
 import { DappsList, DappsForm, DappsUpload } from '../../pages'
-import { setNewDapp, getDapps, getDappById, createDapp, updateDapp, deleteDapp } from '../../redux/actions'
+import { setNewDapp, getDapps, getDappById, createDapp, updateDapp, deleteDapp, getIpfsByHash } from '../../redux/actions'
 
 class DappsDev extends PureComponent {
   state = { current: 0 }
@@ -30,7 +31,11 @@ class DappsDev extends PureComponent {
   }
 
   onPageUpload = async () => {
-    await this.props.getDappById(this.props.match.params.id)
+    const params = queryString.parse(this.props.location.search)
+    await this.props.getDappById(params.id)
+    if (params.ipfs) {
+      await this.props.getIpfsByHash(params.ipfs)
+    }
   }
 
   onBack = async () => {
@@ -63,11 +68,12 @@ class DappsDev extends PureComponent {
 
   onUploadDapp = (useStep = true) => {
     const { data } = this.props.dapps
+
     if (data) {
       return {
         name: 'file',
         multiple: false,
-        accept: '.zip,.rar',
+        accept: '.zip',
         showUploadList: useStep,
         customRequest: ({ onSuccess, onError, file }) => {
           api
@@ -88,6 +94,8 @@ class DappsDev extends PureComponent {
                     })
 
                     if (success) {
+                      this.props.getIpfsByHash(payload.ipfs_hash)
+
                       if (useStep) {
                         const current = this.state.current + 1
                         this.setState({ current })
@@ -109,6 +117,15 @@ class DappsDev extends PureComponent {
     }
   }
 
+  onGetDetailIpfs = async hash => {
+    if (hash) {
+      const { data } = this.props.ipfs
+      const params = queryString.parse(this.props.location.search)
+      const prev = params.ipfs !== hash ? data.Hash : null
+      this.props.getIpfsByHash(hash, prev)
+    }
+  }
+
   onDeleteData = async id => {
     if (id) {
       this.props.deleteDapp(id).then(resp => {
@@ -127,8 +144,9 @@ class DappsDev extends PureComponent {
 
   render() {
     const { current } = this.state
-    const { dapps, page } = this.props
+    const { page, dapps, ipfs } = this.props
     const { skeleton, loading, error, message, data, datas, paginate } = dapps
+    // console.log('==ipfs', ipfs && ipfs.data)
 
     return page === 'list' ? (
       <DappsList
@@ -148,8 +166,14 @@ class DappsDev extends PureComponent {
         error={error}
         loading={loading}
         message={message}
+        dataIpfs={ipfs.data}
+        datasIpfs={ipfs.datas}
+        errorIpfs={ipfs.error}
+        loadingIpfs={ipfs.loading}
+        messageIpfs={ipfs.message}
         onRefresh={this.onPageUpload.bind(this)}
         onUploadDapp={this.onUploadDapp.bind(this)}
+        onGetDetailIpfs={val => this.onGetDetailIpfs(val)}
       />
     ) : (
       <DappsForm
@@ -170,10 +194,10 @@ class DappsDev extends PureComponent {
 }
 
 const mapStateToProps = state => {
-  return { dapps: state.dapps }
+  return { dapps: state.dapps, ipfs: state.ipfs }
 }
 
 const mapDispatchToProps = dispatch =>
-  bindActionCreators({ setNewDapp, getDapps, getDappById, createDapp, updateDapp, deleteDapp }, dispatch)
+  bindActionCreators({ setNewDapp, getDapps, getDappById, createDapp, updateDapp, deleteDapp, getIpfsByHash }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(DappsDev)

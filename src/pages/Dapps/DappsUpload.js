@@ -8,13 +8,14 @@ import PageError from '../PageError'
 const DappsUpload = props => {
   const { title } = props
   const { loading, error, message, data } = props
-  const { onRefresh, onUploadDapp } = props
+  const { onRefresh, onUploadDapp, onGetDetailIpfs } = props
+  const { loadingIpfs, datasIpfs } = props
 
   const propsUpload = onUploadDapp(false)
   const color = data && data.phase ? (data.phase === 'Running' ? 'green' : 'magenta') : null
   const dappUploads =
-    data &&
-    data.dappUploads.map(i => {
+    datasIpfs &&
+    datasIpfs.map(i => {
       i.key = i.Hash
       return i
     })
@@ -23,12 +24,19 @@ const DappsUpload = props => {
     {
       key: 'Name',
       title: 'Name',
-      render: record => (
-        <span>
-          <Icon type={record.Type === 1 ? 'folder-open' : 'file'} style={{ marginRight: '5px' }} />
-          {record.Name}
-        </span>
-      ),
+      render: record => {
+        return record.Type < 2 ? (
+          <span onClick={() => onGetDetailIpfs(record.Hash)} style={{ cursor: 'pointer' }}>
+            <Icon type="folder-open" theme="filled" style={{ marginRight: '5px' }} />
+            {record.Name}
+          </span>
+        ) : (
+          <span>
+            <Icon type={record.Type === 3 ? 'file-exclamation' : 'file'} style={{ marginRight: '5px' }} />
+            {record.Name}
+          </span>
+        )
+      },
     },
     {
       key: 'Size',
@@ -67,7 +75,7 @@ const DappsUpload = props => {
             </span>
           }
         >
-          <Table columns={columns} dataSource={dappUploads} size="small" loading={loading} pagination={false} />
+          <Table columns={columns} dataSource={dappUploads} size="small" loading={loadingIpfs} pagination={false} />
         </Card>
       </Col>
       <Col span={10}>
