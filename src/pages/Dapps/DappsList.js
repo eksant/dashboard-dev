@@ -1,7 +1,7 @@
 import React from 'react'
 import moment from 'moment'
 import { Link } from 'react-router-dom'
-import { Card, Table, Divider, Button, Icon, Tag, Popconfirm } from 'antd'
+import { Card, Table, Button, Icon, Tag, Popconfirm } from 'antd'
 
 import PageError from '../PageError'
 
@@ -14,16 +14,11 @@ const DappsList = props => {
     {
       title: '#',
       dataIndex: 'key',
-      ellipsis: false,
+      // ellipsis: false,
     },
-    // {
-    //   title: 'Dapp UID',
-    //   dataIndex: 'dappUid',
-    //   ellipsis: true,
-    // },
     {
       title: 'Dapp Name',
-      dataIndex: 'name',
+      render: record => <Link to={`/dapps/upload/${record.id}`}>{record.name}</Link>,
     },
     {
       title: 'IP Local',
@@ -36,11 +31,6 @@ const DappsList = props => {
     {
       title: 'Port',
       dataIndex: 'port',
-    },
-    {
-      title: 'Hash File',
-      dataIndex: 'ipfsHash',
-      ellipsis: false,
     },
     {
       title: 'Status',
@@ -64,12 +54,12 @@ const DappsList = props => {
       render: record => {
         return (
           <span>
-            <Link to={`upload/${record.id}`}>
+            {/* <Link to={`upload/${record.id}`}>
               <Button type="link" icon="cloud-upload" size="small" disabled>
                 Upload
               </Button>
             </Link>
-            <Divider type="vertical" />
+            <Divider type="vertical" /> */}
             <Popconfirm title="Are you sure delete this record?" onConfirm={() => onDeleteData(record.id)} okText="Yes" cancelText="No">
               <Button type="link" icon="delete" className="red-color" size="small">
                 Delete
@@ -81,7 +71,9 @@ const DappsList = props => {
     },
   ]
 
-  return (
+  return error ? (
+    <PageError message={message} />
+  ) : (
     <Card
       title={<h3>{title}</h3>}
       size="small"
@@ -100,22 +92,7 @@ const DappsList = props => {
         </span>
       }
     >
-      {error ? (
-        <PageError message={message} />
-      ) : (
-        <Table
-          columns={columns}
-          dataSource={datas}
-          // ellipsis={false}
-          size="small"
-          // tableLayout="fixed"
-          loading={loading}
-          pagination={true}
-          // columns={columns.map(item => {
-          //   console.log
-          //   ({ ...item, ellipsis:  true })})}
-        />
-      )}
+      <Table columns={columns} dataSource={datas} size="small" loading={loading} pagination={true} />
     </Card>
   )
 }

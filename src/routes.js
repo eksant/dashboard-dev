@@ -7,6 +7,7 @@ const routes = [
   { title: 'Dashboard', path: '/', roles: ['Developer'], component: DashboardDev },
   { title: 'DApps List', page: 'list', path: '/dapps', roles: ['Developer'], component: DappsDev },
   { title: 'Submit DApp', page: 'new', path: '/dapps/new', roles: ['Developer'], component: DappsDev },
+  { title: 'Upload DApp', page: 'upload', path: '/dapps/upload/:id', roles: ['Developer'], component: DappsDev },
 ]
 
 export default routes

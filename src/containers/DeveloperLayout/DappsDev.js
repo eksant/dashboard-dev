@@ -4,7 +4,7 @@ import { bindActionCreators } from 'redux'
 import { notification } from 'antd'
 
 import { basePath, api } from '../../utils'
-import { DappsList, DappsForm } from '../../pages'
+import { DappsList, DappsForm, DappsUpload } from '../../pages'
 import { setNewDapp, getDapps, getDappById, createDapp, updateDapp, deleteDapp } from '../../redux/actions'
 
 class DappsDev extends PureComponent {
@@ -14,6 +14,8 @@ class DappsDev extends PureComponent {
     const { page } = this.props
     if (page === 'new') {
       this.onPageNew()
+    } else if (page === 'upload') {
+      this.onPageUpload()
     } else {
       this.onRefresh()
     }
@@ -27,8 +29,8 @@ class DappsDev extends PureComponent {
     await this.props.setNewDapp()
   }
 
-  onPageEdit = async id => {
-    await this.props.getDappById(id)
+  onPageUpload = async () => {
+    await this.props.getDappById(this.props.match.params.id)
   }
 
   onBack = async () => {
@@ -59,13 +61,14 @@ class DappsDev extends PureComponent {
     }
   }
 
-  onUploadDapp = () => {
+  onUploadDapp = (useStep = true) => {
     const { data } = this.props.dapps
     if (data) {
       return {
         name: 'file',
         multiple: false,
         accept: '.zip,.rar',
+        showUploadList: useStep,
         customRequest: ({ onSuccess, onError, file }) => {
           api
             .uploadDapp('ipfs/adddir', file)
@@ -85,8 +88,12 @@ class DappsDev extends PureComponent {
                     })
 
                     if (success) {
-                      const current = this.state.current + 1
-                      this.setState({ current })
+                      if (useStep) {
+                        const current = this.state.current + 1
+                        this.setState({ current })
+                      } else {
+                        this.onPageUpload()
+                      }
                     }
                   })
                   .catch(error => {
@@ -98,9 +105,6 @@ class DappsDev extends PureComponent {
             })
             .catch(error => onError(error))
         },
-        // onChange(info) {
-        //   console.log('==change', info)
-        // },
       }
     }
   }
@@ -136,6 +140,16 @@ class DappsDev extends PureComponent {
         paginate={paginate}
         onRefresh={this.onRefresh.bind(this)}
         onDeleteData={id => this.onDeleteData(id)}
+      />
+    ) : page === 'upload' ? (
+      <DappsUpload
+        {...this.props}
+        data={data}
+        error={error}
+        loading={loading}
+        message={message}
+        onRefresh={this.onPageUpload.bind(this)}
+        onUploadDapp={this.onUploadDapp.bind(this)}
       />
     ) : (
       <DappsForm
