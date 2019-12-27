@@ -1,18 +1,16 @@
 import React from 'react'
 import moment from 'moment'
-import { Link } from 'react-router-dom'
 import { Card, Row, Col, Button, Icon, Descriptions, Tag, Skeleton, Table, Upload } from 'antd'
 
 import PageError from '../PageError'
 
 const DappsUpload = props => {
   const { title } = props
-  const { loading, error, message, data } = props
-  const { onRefresh, onUploadDapp, onGetDetailIpfs } = props
-  const { loadingIpfs, datasIpfs } = props
+  const { onRefresh, onBack, onUploadDapp, onGetDetailIpfs } = props
+  const { loading, error, message, data, loadingIpfs, datasIpfs } = props
 
   const propsUpload = onUploadDapp(false)
-  const color = data && data.phase ? (data.phase === 'Running' ? 'green' : 'magenta') : null
+  const color = data && data.status ? (data.status === 'active' ? 'green' : data.status === 'pending' ? 'gold' : 'magenta') : null
   const dappUploads =
     datasIpfs &&
     datasIpfs.map(i => {
@@ -56,12 +54,10 @@ const DappsUpload = props => {
           size="small"
           extra={
             <span>
-              <Link to="/dapps">
-                <Button className="margin-buttons">
-                  <Icon type="left-circle" />
-                  Back
-                </Button>
-              </Link>
+              <Button className="margin-buttons" onClick={onBack}>
+                <Icon type="left-circle" />
+                Back
+              </Button>
               <Button className="margin-buttons" onClick={onRefresh}>
                 <Icon type="sync" />
                 Refresh
@@ -84,7 +80,7 @@ const DappsUpload = props => {
             <h3>
               DApp Information
               <Tag color={color} size="small" style={{ marginLeft: '10px' }}>
-                {data && data.phase}
+                {data && data.status}
               </Tag>
             </h3>
           }
@@ -94,8 +90,8 @@ const DappsUpload = props => {
             <Descriptions bordered column={1} size="small">
               <Descriptions.Item label="DApp Name">{data && data.name}</Descriptions.Item>
               <Descriptions.Item label="Category">{data && data.category}</Descriptions.Item>
-              <Descriptions.Item label="IP Local">{data && data.IpLocal}</Descriptions.Item>
-              <Descriptions.Item label="IP Public">{data && data.IpPublic}</Descriptions.Item>
+              <Descriptions.Item label="IP Public">{data && data.ipPublic ? data.ipPublic : 'waiting..'}</Descriptions.Item>
+              <Descriptions.Item label="Gun DB">{data && data.gunDb ? data.gunDb : 'waiting..'}</Descriptions.Item>
               <Descriptions.Item label="Created At">{data && moment(data.dappCreated).format('DD MMM YYYY')}</Descriptions.Item>
               <Descriptions.Item label="Description">{data && data.description}</Descriptions.Item>
             </Descriptions>

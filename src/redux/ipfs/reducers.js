@@ -33,6 +33,7 @@ const reducers = (state = initialState, action) => {
         loading: false,
         error: true,
         message: action.payload.message || null,
+        datas: action.payload.datas || null,
       }
     case IPFS_SUCCESS:
       return {

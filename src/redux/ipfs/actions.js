@@ -56,7 +56,7 @@ export const getIpfsByHash = (hash, prevHash = null) => {
 
             dispatch(ipfsSuccess({ datas, data: rootIpfs }))
           } else {
-            dispatch(ipfsError({ message }))
+            dispatch(ipfsError({ message, datas: null }))
           }
         })
         .catch(error => {
