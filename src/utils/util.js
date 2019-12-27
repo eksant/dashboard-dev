@@ -84,8 +84,8 @@ export function isArray(val) {
 }
 
 export function basePath(str) {
-  var n = str.lastIndexOf('/')
-  return str.substr(0, n)
+  // return str.substr(0, str.lastIndexOf('/'))
+  return str.substr(0, str.split('/')[1].length + 1)
 }
 
 export function pathName() {

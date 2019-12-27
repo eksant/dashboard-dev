@@ -2,7 +2,7 @@ import api from './api'
 import store from './store'
 import upload from './upload'
 import { gun, sea, textRandom } from './gundb'
-import { layoutForm, layoutFormFull, layoutButton, layoutButtonRight } from './layout'
+import { layoutForm, layoutUpload, layoutFormFull, layoutButton, layoutButtonRight } from './layout'
 import {
   isList,
   isFunction,
@@ -28,6 +28,7 @@ export {
   store,
   upload,
   layoutForm,
+  layoutUpload,
   layoutFormFull,
   layoutButton,
   layoutButtonRight,

@@ -1,7 +1,7 @@
 import React from 'react'
 import { Card, Steps, Button, Input, Form, Select, Skeleton, Alert, Row, Col, Upload, Icon, Result, Spin } from 'antd'
 
-import { layoutForm, layoutButtonRight, layoutFormFull } from '../../utils'
+import { layoutButtonRight, layoutFormFull } from '../../utils'
 
 const { Dragger } = Upload
 const { Step } = Steps
@@ -20,12 +20,33 @@ const steps = [
   },
 ]
 
+const layoutForm = {
+  labelCol: {
+    xs: { span: 24 },
+    sm: { span: 4 },
+  },
+  wrapperCol: {
+    xs: { span: 24 },
+    sm: { span: 20 },
+  },
+}
+
+const layoutUpload = {
+  labelCol: {
+    xs: { span: 24 },
+    sm: { span: 17 },
+  },
+  wrapperCol: {
+    xs: { span: 24 },
+    sm: { span: 4 },
+  },
+}
+
 const DappsForm = props => {
-  const { form } = props
+  const { form, page } = props
   const { getFieldDecorator } = form
-  const { skeleton, loading, error, message, current, data } = props
-  const { onSkipDapp, onCreateDapp, onUploadDapp } = props
-  const propsUpload = onUploadDapp()
+  const { onSkipDapp, onSubmitDapp, onUploadDapp, onUploadLogo } = props
+  const { skeleton, loading, error, message, current, data, loadingLogo, fileList } = props
 
   const onSubmit = e => {
     e.preventDefault()
@@ -33,7 +54,7 @@ const DappsForm = props => {
       if (!err) {
         switch (current) {
           case 0:
-            onCreateDapp(values)
+            onSubmitDapp(values)
             break
           case 1:
             onSkipDapp()
@@ -48,27 +69,27 @@ const DappsForm = props => {
   return (
     <Card>
       <Form onSubmit={onSubmit}>
-        <Steps current={current} style={{ marginBottom: '20px' }}>
-          {steps.map(item => (
-            <Step key={item.title} title={item.title} />
-          ))}
-        </Steps>
+        {page === 'new' && (
+          <Steps current={current} style={{ marginBottom: '20px' }}>
+            {steps.map(item => (
+              <Step key={item.title} title={item.title} />
+            ))}
+          </Steps>
+        )}
 
         {error && message && <Alert description={message} type="error" showIcon closable />}
 
         <Row style={{ marginTop: '20px' }}>
           <Skeleton paragraph={{ rows: 2 }} active loading={skeleton}>
             {steps[current].content === 'Detail' ? (
-              <Spin size="large" spinning={loading} tip="Please wait, DApp configuration takes 20-35 seconds...">
-                <Col span={12}>
+              <Spin size="large" spinning={loading} tip="Please wait, DApp process configuration...">
+                <Col span={18}>
                   <Form.Item label="Dapp Name" {...layoutForm}>
-                    {getFieldDecorator('pod_name', {
-                      initialValue: data && data.pod_name,
+                    {getFieldDecorator('name', {
+                      initialValue: data && data.name,
                       rules: [{ required: true, message: 'Please input dapp name!' }],
-                    })(<Input placeholder="Input dapp name.." />)}
+                    })(<Input placeholder="Input dapp name.." disabled={data ? true : false} />)}
                   </Form.Item>
-                </Col>
-                <Col span={12}>
                   <Form.Item label="Category" {...layoutForm}>
                     {getFieldDecorator('category', {
                       initialValue: data && data.category,
@@ -94,6 +115,25 @@ const DappsForm = props => {
                     )}
                   </Form.Item>
                 </Col>
+                <Col span={6}>
+                  <Form.Item label="Logo" {...layoutUpload}>
+                    {getFieldDecorator('fileList', {
+                      initialValue: fileList,
+                      rules: [{ required: true, message: 'Please upload!' }],
+                    })(
+                      <Upload {...onUploadLogo()}>
+                        {fileList && fileList.length < 1 ? (
+                          <div>
+                            <Icon type={loadingLogo ? 'loading' : 'cloud-upload'} />
+                            <div className="ant-upload-text">Upload</div>
+                          </div>
+                        ) : (
+                          <img src={fileList[0].url} alt="avatar" style={{ width: '100%' }} />
+                        )}
+                      </Upload>
+                    )}
+                  </Form.Item>
+                </Col>
 
                 <Col span={24}>
                   <Form.Item label="Description" {...layoutFormFull}>
@@ -105,7 +145,7 @@ const DappsForm = props => {
                 </Col>
               </Spin>
             ) : steps[current].content === 'Upload' ? (
-              <Dragger {...propsUpload} style={{ marginBottom: '20px' }}>
+              <Dragger {...onUploadDapp()} style={{ marginBottom: '20px' }}>
                 <p className="ant-upload-drag-icon">
                   <Icon type="inbox" />
                 </p>
@@ -115,11 +155,7 @@ const DappsForm = props => {
                 </p>
               </Dragger>
             ) : (
-              <Result
-                status="success"
-                title="Successfully Created DApp!"
-                subTitle="DApp already deploy in node Pfalfa."
-              />
+              <Result status="success" title="Successfully Created DApp!" subTitle="DApp already deploy in node Pfalfa." />
             )}
           </Skeleton>
         </Row>
@@ -127,7 +163,7 @@ const DappsForm = props => {
         <Form.Item {...layoutButtonRight} style={{ textAlign: 'right', marginTop: '10px' }}>
           {current < steps.length - 1 && (
             <Button loading={loading} disabled={loading} type="primary" htmlType="submit">
-              {current === 0 ? 'Create Dapp' : 'Skip / Next'}
+              {current === 0 ? (page === 'new' ? 'Create DApp' : 'Update DApp') : 'Skip / Next'}
             </Button>
           )}
           <Button className="margin-buttons" onClick={props.onBack}>

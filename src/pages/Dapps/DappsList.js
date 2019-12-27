@@ -1,20 +1,25 @@
 import React from 'react'
 import moment from 'moment'
 import { Link } from 'react-router-dom'
-import { Card, Table, Button, Icon, Tag, Popconfirm, Divider } from 'antd'
+import { Card, Table, Button, Icon, Tag, Popconfirm, Avatar, Divider } from 'antd'
 
 import PageError from '../PageError'
 
 const DappsList = props => {
-  const { title } = props
+  const { title, path } = props
   const { onRefresh, onDeleteData } = props
-  const { loading, error, message, datas, path } = props
+  const { loading, error, message, datas } = props
 
   const columns = [
     {
       title: '#',
       dataIndex: 'key',
       // ellipsis: false,
+    },
+    {
+      title: 'Logo',
+      dataIndex: 'logoUrl',
+      render: logoUrl => <Avatar shape="square" size={64} src={logoUrl} />,
     },
     {
       title: 'Dapp Name',
@@ -24,24 +29,30 @@ const DappsList = props => {
       },
     },
     {
-      title: 'IP Local',
-      dataIndex: 'IpLocal',
+      title: 'Category',
+      dataIndex: 'category',
     },
     {
       title: 'IP Public',
-      dataIndex: 'IpPublic',
+      dataIndex: 'ipPublic',
+      render: ipPublic => <label>{ipPublic ? ipPublic : 'waiting..'}</label>,
     },
     {
       title: 'Port',
       dataIndex: 'port',
     },
     {
+      title: 'Gun DB',
+      dataIndex: 'gunDb',
+      render: gunDb => <label>{gunDb ? gunDb : 'waiting..'}</label>,
+    },
+    {
       title: 'Status',
       render: record => {
-        const color = record.phase === 'Running' ? 'green' : 'magenta'
+        const color = record.status === 'active' ? 'green' : record.status === 'pending' ? 'gold' : 'magenta'
         return (
           <Tag color={color} size="small">
-            {record.phase}
+            {record.status}
           </Tag>
         )
       },
@@ -61,6 +72,12 @@ const DappsList = props => {
             <Link to={link}>
               <Button type="link" icon="cloud-upload" size="small">
                 Upload
+              </Button>
+            </Link>
+            <Divider type="vertical" />
+            <Link to={`${path}/edit/${record.id}`}>
+              <Button type="link" icon="edit" size="small">
+                Edit
               </Button>
             </Link>
             <Divider type="vertical" />

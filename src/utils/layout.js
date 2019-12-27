@@ -9,6 +9,17 @@ export const layoutForm = {
   },
 }
 
+export const layoutUpload = {
+  labelCol: {
+    xs: { span: 24 },
+    sm: { span: 20 },
+  },
+  wrapperCol: {
+    xs: { span: 24 },
+    sm: { span: 4 },
+  },
+}
+
 export const layoutFormFull = {
   labelCol: {
     xs: { span: 24 },
