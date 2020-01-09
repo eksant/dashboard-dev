@@ -85,8 +85,8 @@ const DappsForm = props => {
               <Spin size="large" spinning={loading} tip="Please wait, DApp process configuration...">
                 <Col span={18}>
                   <Form.Item label="Dapp Name" {...layoutForm}>
-                    {getFieldDecorator('name', {
-                      initialValue: data && data.name,
+                    {getFieldDecorator('podName', {
+                      initialValue: data && data.podName,
                       rules: [{ required: true, message: 'Please input dapp name!' }],
                     })(<Input placeholder="Input dapp name.." disabled={data ? true : false} />)}
                   </Form.Item>

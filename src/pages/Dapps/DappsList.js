@@ -35,7 +35,17 @@ const DappsList = props => {
     {
       title: 'IP Public',
       dataIndex: 'ipPublic',
-      render: ipPublic => <label>{ipPublic ? ipPublic : 'waiting..'}</label>,
+      render: ipPublic => (
+        <label>
+          {ipPublic ? (
+            <a href={`http://${ipPublic}`} target="_blank" rel="noopener noreferrer">
+              {ipPublic}
+            </a>
+          ) : (
+            'waiting..'
+          )}
+        </label>
+      ),
     },
     {
       title: 'Port',
@@ -49,10 +59,10 @@ const DappsList = props => {
     {
       title: 'Status',
       render: record => {
-        const color = record.status === 'active' ? 'green' : record.status === 'pending' ? 'gold' : 'magenta'
+        const color = record.dappStatus === 'active' ? 'green' : record.dappStatus === 'pending' ? 'gold' : 'magenta'
         return (
           <Tag color={color} size="small">
-            {record.status}
+            {record.dappStatus}
           </Tag>
         )
       },
