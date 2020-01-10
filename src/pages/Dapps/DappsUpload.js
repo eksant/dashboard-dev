@@ -10,7 +10,8 @@ const DappsUpload = props => {
   const { loading, error, message, data, loadingIpfs, datasIpfs } = props
 
   const propsUpload = onUploadDapp(false)
-  const color = data && data.status ? (data.status === 'active' ? 'green' : data.status === 'pending' ? 'gold' : 'magenta') : null
+  const color =
+    data && data.dappStatus ? (data.dappStatus === 'active' ? 'green' : data.dappStatus === 'pending' ? 'gold' : 'magenta') : null
   const dappUploads =
     datasIpfs &&
     datasIpfs.map(i => {
@@ -80,7 +81,7 @@ const DappsUpload = props => {
             <h3>
               DApp Information
               <Tag color={color} size="small" style={{ marginLeft: '10px' }}>
-                {data && data.status}
+                {data && data.dappStatus}
               </Tag>
             </h3>
           }
@@ -90,7 +91,15 @@ const DappsUpload = props => {
             <Descriptions bordered column={1} size="small">
               <Descriptions.Item label="DApp Name">{data && data.name}</Descriptions.Item>
               <Descriptions.Item label="Category">{data && data.category}</Descriptions.Item>
-              <Descriptions.Item label="IP Public">{data && data.ipPublic ? data.ipPublic : 'waiting..'}</Descriptions.Item>
+              <Descriptions.Item label="IP Public">
+                {data && data.ipPublic ? (
+                  <a href={`http://${data.ipPublic}`} target="_blank" rel="noopener noreferrer">
+                    {data.ipPublic}
+                  </a>
+                ) : (
+                  'waiting..'
+                )}
+              </Descriptions.Item>
               <Descriptions.Item label="Gun DB">{data && data.gunDb ? data.gunDb : 'waiting..'}</Descriptions.Item>
               <Descriptions.Item label="Created At">{data && moment(data.dappCreated).format('DD MMM YYYY')}</Descriptions.Item>
               <Descriptions.Item label="Description">{data && data.description}</Descriptions.Item>

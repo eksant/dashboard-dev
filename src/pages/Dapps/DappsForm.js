@@ -86,7 +86,7 @@ const DappsForm = props => {
                 <Col span={18}>
                   <Form.Item label="Dapp Name" {...layoutForm}>
                     {getFieldDecorator('podName', {
-                      initialValue: data && data.podName,
+                      initialValue: data && data.name,
                       rules: [{ required: true, message: 'Please input dapp name!' }],
                     })(<Input placeholder="Input dapp name.." disabled={data ? true : false} />)}
                   </Form.Item>
@@ -119,10 +119,10 @@ const DappsForm = props => {
                   <Form.Item label="Logo" {...layoutUpload}>
                     {getFieldDecorator('fileList', {
                       initialValue: fileList,
-                      rules: [{ required: true, message: 'Please upload!' }],
+                      rules: [{ required: false, message: 'Please upload!' }],
                     })(
                       <Upload {...onUploadLogo()}>
-                        {fileList && fileList.length < 1 ? (
+                        {(fileList && fileList.length < 1) || (fileList.length > 0 && !fileList[0].url) ? (
                           <div>
                             <Icon type={loadingLogo ? 'loading' : 'cloud-upload'} />
                             <div className="ant-upload-text">Upload</div>
