@@ -1,96 +1,79 @@
 import React, { PureComponent } from 'react'
-import { connect } from 'react-redux'
-import { bindActionCreators } from 'redux'
 import { notification } from 'antd'
 
-import { setNewAuth, setAuth, postRegister } from '../../redux/actions'
 import { RegisterPage } from '../../pages'
+import { api, store, encrypt } from '../../utils'
 
-const steps = [
-  {
-    title: 'New Account',
-    content: 'NewAccount',
-  },
-  {
-    title: 'Recovery Hint',
-    content: 'RecoveryHint',
-  },
-  {
-    title: 'Register',
-    content: 'Register',
-  },
-]
-
-class RegisterLayout extends PureComponent {
-  state = { current: 0 }
+export default class RegisterLayout extends PureComponent {
+  state = { loading: false, error: false, message: null }
 
   componentDidMount = () => {
-    this.props.setNewAuth()
+    this.onRefresh()
   }
 
-  onNext = val => {
-    const { data } = this.props.auth
-    const payload = {
-      email: val && val.email ? val.email : data && data.email ? data.email : null,
-      passphare: val && val.passphare ? val.passphare : data && data.passphare ? data.passphare : null,
-      confPassphare: val && val.confPassphare ? val.confPassphare : data && data.confPassphare ? data.confPassphare : null,
-      hint: val && val.hint ? val.hint : data && data.hint ? data.hint : null,
-    }
-
-    this.props.setAuth(payload)
-    const current = this.state.current + 1
-    this.setState({ current })
-  }
-
-  onPrev = () => {
-    const current = this.state.current - 1
-    this.setState({ current })
+  onRefresh = () => {
+    this.setState({ loading: false, error: false, message: null })
   }
 
   onSubmit = val => {
-    this.props
-      .postRegister(val)
-      .then(result => {
-        if (!result.error) {
-          notification['success']({
-            message: 'Register New Account',
-            description: result.message,
-          })
+    const { email, hint, passphare, confPassphare } = val
 
-          setTimeout(() => {
-            window.location.href = '/'
-          }, 1000)
-        }
-      })
-      .catch(error => {
-        console.log(error)
-      })
+    this.setState({ loading: true })
+    if (passphare !== confPassphare) {
+      this.setState({ loading: false, error: true, message: 'Confirm password not the same' })
+    } else {
+      api
+        .post('auth/register', { email, passphare, hint }, false)
+        .then(({ success, message }) => {
+          if (success) {
+            api
+              .post('auth/login', { email, passphare }, false)
+              .then(async ({ success, message, data }) => {
+                if (success) {
+                  await store.set('pubkey', encrypt(data.pub))
+                  notification['success']({
+                    message: 'Login',
+                    description: message,
+                  })
+
+                  setTimeout(() => {
+                    window.location.href = '/'
+                  }, 1000)
+                } else {
+                  this.setState({ error: true, message })
+                }
+              })
+              .finally(_ => this.setState({ loading: false }))
+              .catch(error => console.error(error.message))
+          } else {
+            this.setState({ error: true, message })
+          }
+        })
+        .finally(_ => this.setState({ loading: false }))
+        .catch(error => console.error(error.message))
+    }
+
+    // this.props
+    //   .postRegister(val)
+    //   .then(result => {
+    //     if (!result.error) {
+    //       notification['success']({
+    //         message: 'Register New Account',
+    //         description: result.message,
+    //       })
+
+    //       setTimeout(() => {
+    //         window.location.href = '/'
+    //       }, 1000)
+    //     }
+    //   })
+    //   .catch(error => {
+    //     console.log(error)
+    //   })
   }
 
   render() {
-    const { current } = this.state
-    const { loading, error, message, data } = this.props.auth
-    return (
-      <RegisterPage
-        {...this.props}
-        data={data}
-        steps={steps}
-        error={error}
-        loading={loading}
-        message={message}
-        current={current}
-        onNext={val => this.onNext(val)}
-        onPrev={this.onPrev.bind(this)}
-        onSubmit={this.onSubmit.bind(this)}
-      />
-    )
+    const { loading, error, message } = this.state
+    return <RegisterPage {...this.props} error={error} loading={loading} message={message} onSubmit={val => this.onSubmit(val)} />
   }
 }
-
-const mapStateToProps = state => {
-  return { auth: state.auth }
-}
-
-const mapDispatchToProps = dispatch => bindActionCreators({ setNewAuth, setAuth, postRegister }, dispatch)
-
-export default connect(mapStateToProps, mapDispatchToProps)(RegisterLayout)
