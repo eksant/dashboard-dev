@@ -1,9 +1,7 @@
 import React, { PureComponent } from 'react'
-import { connect } from 'react-redux'
-import { bindActionCreators } from 'redux'
 import { notification } from 'antd'
 
-import { setNewAuth, setAuth, postForgot, postReset } from '../../redux/actions'
+import { api } from '../../utils'
 import { ForgotPage } from '../../pages'
 
 const steps = [
@@ -21,34 +19,67 @@ const steps = [
   },
 ]
 
-class ForgotLayout extends PureComponent {
-  state = { current: 0 }
+export default class ForgotLayout extends PureComponent {
+  state = {
+    current: 0,
+    error: false,
+    message: null,
+    loading: false,
+    data: { email: null, hint: null, oldPassphare: null, newPassphare: null },
+  }
 
   componentDidMount = () => {
-    this.props.setNewAuth()
+    this.onRefresh()
+  }
+
+  onRefresh = () => {
+    this.setState({
+      current: 0,
+      error: false,
+      message: null,
+      loading: false,
+      data: { email: null, hint: null, oldPassphare: null, newPassphare: null },
+    })
   }
 
   onForgotPassword = val => {
-    this.props.postForgot(val).then(result => {
-      if (result.success) {
-        const current = this.state.current + 1
-        this.setState({ current })
-      }
-    })
+    const { email, hint } = val
+    this.setState({ loading: true, data: { email, hint } })
+    api
+      .post('auth/forgot', { email, hint }, false)
+      .then(({ success, message, data }) => {
+        if (success) {
+          const current = this.state.current + 1
+          this.setState({ current, error: false, message: null, data: { ...this.state, oldPassphare: data } })
+        } else {
+          this.setState({ error: true, message })
+        }
+      })
+      .finally(_ => this.setState({ loading: false }))
+      .catch(error => console.error(error.message))
   }
 
   onResetPassword = val => {
-    this.props.postReset(val).then(result => {
-      if (result.success) {
-        notification['success']({
-          message: 'Reset Password',
-          description: result.message,
-        })
+    const { oldPassphare, newPassphare, data } = val
+    const { email } = data
+    this.setState({ loading: true })
+    api
+      .post('auth/reset', { email, oldPassphare, newPassphare }, false)
+      .then(({ success, message }) => {
+        if (success) {
+          const current = this.state.current + 1
+          this.setState({ current, error: false, message: null })
 
-        const current = this.state.current + 1
-        this.setState({ current })
-      }
-    })
+          notification['success']({
+            message: 'Reset Password',
+            description: message,
+          })
+        } else {
+          this.setState({ error: true, message })
+        }
+      })
+      .finally(_ => this.setState({ loading: false }))
+      .catch(error => console.error(error.message))
   }
 
   onPrev = () => {
@@ -57,8 +88,7 @@ class ForgotLayout extends PureComponent {
   }
 
   render() {
-    const { current } = this.state
-    const { loading, error, message, data } = this.props.auth
+    const { loading, error, message, data, current } = this.state
     return (
       <ForgotPage
         {...this.props}
@@ -75,11 +105,3 @@ class ForgotLayout extends PureComponent {
     )
   }
 }
-
-const mapStateToProps = state => {
-  return { auth: state.auth }
-}
-
-const mapDispatchToProps = dispatch => bindActionCreators({ setNewAuth, setAuth, postForgot, postReset }, dispatch)
-
-export default connect(mapStateToProps, mapDispatchToProps)(ForgotLayout)
