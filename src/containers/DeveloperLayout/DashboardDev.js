@@ -1,34 +1,25 @@
 import React, { PureComponent } from 'react'
-// import { connect } from 'react-redux';
-// import { bindActionCreators } from 'redux';
 
 import { Dashboard } from '../../pages'
-// import { getDashboard } from '../../redux/actions';
+import { store, decrypt } from '../../utils'
 
-class DashboardDev extends PureComponent {
+export default class DashboardDev extends PureComponent {
+  state = { loading: false, data: null }
+
   componentDidMount() {
     this.onRefresh()
   }
 
   onRefresh = async () => {
-    // await this.props.getDashboard();
+    this.setState({ loading: true })
+    const email = await decrypt(store.get('email'))
+    const pubkey = await decrypt(store.get('pubkey'))
+    const data = { email, pubkey }
+    this.setState({ loading: false, data })
   }
 
   render() {
-    const { auth } = this.props
-    return <Dashboard {...this.props} auth={auth} onRefresh={this.onRefresh.bind(this)} />
+    const { loading, data } = this.state
+    return <Dashboard {...this.props} loading={loading} data={data} onRefresh={_ => this.onRefresh()} />
   }
 }
-
-export default DashboardDev
-
-// const mapStateToProps = state => {
-//   return { dashboard: state.dashboard }
-// }
-
-// const mapDispatchToProps = dispatch => bindActionCreators({ getDashboard }, dispatch)
-
-// export default connect(
-//   mapStateToProps,
-//   mapDispatchToProps
-// )(DashboardUser)

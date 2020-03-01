@@ -1,15 +1,13 @@
 import React from 'react'
-import { Card } from 'antd'
+import { Card, Skeleton } from 'antd'
 
-const Dashboard = props => {
-  const { auth } = props
-  
+const Dashboard = ({ loading, data }) => {
   return (
     <Card style={{ height: 500 }}>
-      <h3>Dashboard</h3>
-      <p>Alias : {auth && auth.alias}</p>
-      <p>Epub : {auth && auth.epub}</p>
-      <p>Pub : {auth && auth.pub}</p>
+      <Skeleton loading={loading} active>
+        <p>Email : {data && data.email}</p>
+        <p>Public Key : {data && data.pubkey}</p>
+      </Skeleton>
     </Card>
   )
 }

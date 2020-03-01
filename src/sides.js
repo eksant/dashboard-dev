@@ -8,7 +8,7 @@ const sides = [
     childs: [{ name: 'User', path: '/users', icon: 'link', roles: ['Superadmin'] }],
   },
   {
-    name: 'DApps',
+    name: 'My DApps',
     path: '/dapps',
     icon: 'global',
     roles: ['Developer'],
