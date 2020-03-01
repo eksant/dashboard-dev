@@ -5,15 +5,14 @@ import { Row, Col, Card, Form, PageHeader, Icon, Input, Button, Alert, Checkbox 
 import logo from '../../assets/logo.svg'
 import { store, decrypt } from '../../utils'
 
-const LoginPage = props => {
-  const { form, loading, error, onSubmit } = props
+const LoginPage = ({ form, loading, error, message, onSubmit }) => {
   const { getFieldDecorator } = form
   const email = decrypt(store.get('email'))
   const passphare = decrypt(store.get('passphare'))
 
   const handleSubmit = e => {
     e.preventDefault()
-    props.form.validateFields((err, values) => {
+    form.validateFields((err, values) => {
       if (!err) {
         onSubmit(values)
       }
@@ -26,9 +25,9 @@ const LoginPage = props => {
         className="header"
         title={
           <div className="logo-box">
-            <Link to="/">
+            <a href="https://staging-enduser.pfalfa.io/">
               <img src={logo} alt="logo" className="logo" /> Pfalfa
-            </Link>
+            </a>
           </div>
         }
         extra={[
@@ -62,7 +61,7 @@ const LoginPage = props => {
                 )}
               </Form.Item>
 
-              {error && <Alert message="Error" description={props.message} type="error" closable />}
+              {error && <Alert message="Error" description={message} type="error" closable />}
 
               <Form.Item>
                 {getFieldDecorator('remember', {

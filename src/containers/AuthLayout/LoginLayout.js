@@ -1,49 +1,55 @@
 import React, { PureComponent } from 'react'
-import { connect } from 'react-redux'
-import { bindActionCreators } from 'redux'
 import { notification } from 'antd'
 
-import { setNewAuth, postLogin } from '../../redux/actions'
 import { LoginPage } from '../../pages'
+import { api, store, encrypt } from '../../utils'
 
-class LoginLayout extends PureComponent {
+export default class LoginLayout extends PureComponent {
+  state = { loading: false, error: false, message: null }
+
   componentDidMount = () => {
-    this.props.setNewAuth()
+    this.onRefresh()
   }
 
-  onSubmit = val => {
-    this.props
-      .postLogin(val)
-      .then(result => {
-        if (result.success) {
+  onRefresh = () => {
+    this.setState({ loading: false, error: false, message: null })
+  }
+
+  onSubmit = async val => {
+    const { email, passphare, remember } = val
+    this.setState({ loading: true })
+
+    if (remember) {
+      await store.set('email', encrypt(email))
+      await store.set('passphare', encrypt(passphare))
+    } else {
+      await store.remove('email')
+      await store.remove('passphare')
+    }
+
+    api
+      .post('auth/login', { email, passphare }, false)
+      .then(async ({ success, message, data }) => {
+        if (success) {
+          await store.set('pubkey', encrypt(data.pub))
           notification['success']({
             message: 'Login',
-            description: result.message,
+            description: message,
           })
 
           setTimeout(() => {
             window.location.href = '/'
           }, 1000)
+        } else {
+          this.setState({ error: true, message })
         }
       })
-      .catch(error => {
-        console.log(error)
-      })
+      .finally(_ => this.setState({ loading: false }))
+      .catch(error => console.error(error.message))
   }
 
   render() {
-    const { loading, error, message } = this.props.auth
-    return <LoginPage {...this.props} loading={loading} error={error} message={message} onSubmit={this.onSubmit.bind(this)} />
+    const { loading, error, message } = this.state
+    return <LoginPage {...this.props} loading={loading} error={error} message={message} onSubmit={val => this.onSubmit(val)} />
   }
 }
-
-const mapStateToProps = state => {
-  return { auth: state.auth }
-}
-
-const mapDispatchToProps = dispatch => bindActionCreators({ setNewAuth, postLogin }, dispatch)
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(LoginLayout)
