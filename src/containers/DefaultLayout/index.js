@@ -1,7 +1,5 @@
 import React, { PureComponent, Suspense } from 'react'
 import { Route, Switch, Redirect } from 'react-router-dom'
-import { connect } from 'react-redux'
-import { bindActionCreators } from 'redux'
 import { Layout } from 'antd'
 
 import sides from '../../sides'
@@ -10,16 +8,18 @@ import LayoutSide from './LayoutSide'
 import LayoutHeader from './LayoutHeader'
 import LayoutBreadcrumb from './LayoutBreadcrumb'
 import { TopBarProgress } from '../../components'
-import { store, pathName, pathNames, isArray } from '../../utils'
-import { getAuthUser } from '../../redux/actions'
+import { store, pathName, pathNames, isArray, decrypt } from '../../utils'
 
 const Page404 = React.lazy(() => import('../../pages/Page404'))
 const { Content } = Layout
 
-class DefaultLayout extends PureComponent {
+export default class DefaultLayout extends PureComponent {
   _isMounted = false
 
   state = {
+    data: null,
+    error: false,
+    loading: false,
     menuOpenKeys: [],
     menuSelecteds: [],
     breadcrumbKeys: [],
@@ -29,7 +29,10 @@ class DefaultLayout extends PureComponent {
     this._isMounted = true
 
     this.setDefaultState()
-    await this.props.getAuthUser()
+    await this.setState({ loading: true })
+    const email = decrypt(store.get('email'))
+    const pubkey = decrypt(store.get('pubkey'))
+    this.setState({ loading: false, data: { email, pubkey } })
   }
 
   componentWillUnmount() {
@@ -91,8 +94,7 @@ class DefaultLayout extends PureComponent {
   }
 
   render() {
-    const { menuOpenKeys, menuSelecteds, breadcrumbKeys } = this.state
-    const { loading, error, data } = this.props.auth
+    const { loading, error, data, menuOpenKeys, menuSelecteds, breadcrumbKeys } = this.state
 
     return (
       <Layout className="default-layout">
@@ -131,14 +133,3 @@ class DefaultLayout extends PureComponent {
     )
   }
 }
-
-const mapStateToProps = state => {
-  return { auth: state.auth }
-}
-
-const mapDispatchToProps = dispatch => bindActionCreators({ getAuthUser }, dispatch)
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(DefaultLayout)

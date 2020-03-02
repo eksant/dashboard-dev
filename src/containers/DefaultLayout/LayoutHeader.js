@@ -1,27 +1,29 @@
 import React, { PureComponent } from 'react'
-import { connect } from 'react-redux'
-import { bindActionCreators } from 'redux'
 import { Layout, Menu, Icon, Avatar, Row, Col } from 'antd'
 
-import { getAuthUser, postLogout } from '../../redux/actions'
+import { store, decrypt } from '../../utils'
 
-const { Header } = Layout
 const { SubMenu } = Menu
+const { Header } = Layout
 const userOg = require('../../assets/user-default.png')
 const logoUrl = require('../../assets/logo-pfalfa.svg')
 
-class LayoutHeader extends PureComponent {
+export default class LayoutHeader extends PureComponent {
+  state = { data: null }
+
   componentDidMount = async () => {
-    await this.props.getAuthUser()
+    const email = decrypt(store.get('email'))
+    const pubkey = decrypt(store.get('pubkey'))
+    this.setState({ data: { email, pubkey } })
   }
 
   onLogout = async () => {
-    await this.props.postLogout()
+    await store.remove('pubkey')
     window.location.href = '/'
   }
 
   render() {
-    const { data } = this.props.auth
+    const { data } = this.state
 
     return (
       <div className="header-admin">
@@ -39,7 +41,7 @@ class LayoutHeader extends PureComponent {
                   title={
                     <span className="submenu-title-wrapper">
                       <Avatar size="small" src={userOg} style={{ marginRight: '5px' }} />
-                      {data && data.alias}
+                      {data && data.email}
                     </span>
                   }
                 >
@@ -56,14 +58,3 @@ class LayoutHeader extends PureComponent {
     )
   }
 }
-
-const mapStateToProps = state => {
-  return { auth: state.auth }
-}
-
-const mapDispatchToProps = dispatch => bindActionCreators({ getAuthUser, postLogout }, dispatch)
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(LayoutHeader)

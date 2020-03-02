@@ -1,4 +1,0 @@
-export const DAPPS_FORM = 'DAPPS_FORM'
-export const DAPPS_LOADING = 'DAPPS_LOADING'
-export const DAPPS_ERROR = 'DAPPS_ERROR'
-export const DAPPS_SUCCESS = 'DAPPS_SUCCESS'
