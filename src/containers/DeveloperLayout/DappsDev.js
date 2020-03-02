@@ -1,18 +1,26 @@
 import React, { PureComponent } from 'react'
 import queryString from 'query-string'
-import { connect } from 'react-redux'
-import { bindActionCreators } from 'redux'
 import { notification } from 'antd'
 
 import { basePath, api } from '../../utils'
 import { DappsList, DappsForm, DappsUpload } from '../../pages'
-import { setNewDapp, getDapps, getDappById, createDapp, updateDapp, deleteDapp, getIpfsByHash } from '../../redux/actions'
 
-class DappsDev extends PureComponent {
+export default class DappsDev extends PureComponent {
   state = {
     current: 0,
     fileList: [],
-    loadingLogo: false,
+    fileListLoading: false,
+
+    listData: [],
+    listError: false,
+    listMessage: null,
+    listLoading: false,
+
+    formData: null,
+    formError: false,
+    formMessage: null,
+    formLoading: false,
+    formSkeleton: false,
   }
 
   componentDidMount() {
@@ -28,16 +36,44 @@ class DappsDev extends PureComponent {
     }
   }
 
-  onRefresh = async () => {
-    await this.props.getDapps()
+  onRefresh = () => {
+    this.setState({ listLoading: true })
+    api
+      .get('dapps')
+      .then(({ success, message, data }) => {
+        if (success) {
+          const datas = data.map((item, idx) => {
+            item.key = idx + 1
+            return item
+          })
+          this.setState({ listData: datas })
+        } else {
+          this.setState({ listError: true, listMessage: message })
+        }
+      })
+      .finally(_ => this.setState({ listLoading: false }))
+      .catch(error => console.error(error.message))
   }
 
   onPageNew = async () => {
-    await this.props.setNewDapp()
+    await this.setState({ formSkeleton: true, formData: null })
+    await this.setState({ formSkeleton: false })
   }
 
   onPageEdit = async () => {
-    await this.props.getDappById(this.props.match.params.id)
+    await this.setState({ formSkeleton: true })
+    api
+      .get(`dapps/${this.props.match.params.id}`)
+      .then(({ success, message, data }) => {
+        if (success) {
+          const fileList = [{ uid: '-1', name: 'fileList.png', status: 'done', url: data && data.logoUrl }]
+          this.setState({ formData: data, fileList })
+        } else {
+          this.setState({ formError: true, formMessage: message })
+        }
+      })
+      .finally(_ => this.setState({ formSkeleton: false }))
+      .catch(error => console.error(error.message))
   }
 
   onPageUpload = async () => {
@@ -201,131 +237,102 @@ class DappsDev extends PureComponent {
     }
   }
 
-  onSubmitDapp = async payload => {
-    if (payload) {
-      const { data } = this.props.dapps
-      const { fileList } = this.state
-      payload.logoUrl = fileList.length > 0 ? fileList[0].url : data ? payload.fileList[0].url : null
+  onSubmitDapp = async value => {
+    if (value) {
+      const { fileList, formData } = this.state
+      value.logoUrl = fileList.length > 0 ? fileList[0].url : formData ? value.fileList[0].url : null
 
-      if (!data) {
-        this.props.createDapp(payload).then(resp => {
-          const { success, message } = resp
-          if (success) {
-            notification['success']({
-              message: 'Application Message',
-              description: message,
-              style: { top: '30px' },
-            })
+      if (!formData) {
+        await this.setState({ formLoading: true })
+        api
+          .post('dapps', value)
+          .then(({ success, message }) => {
+            if (success) {
+              notification['success']({
+                message: 'My DApps',
+                description: message,
+                style: { top: '30px' },
+              })
 
-            const current = this.state.current + 1
-            this.setState({ current })
-          }
-        })
-      } else {
-        this.props.updateDapp(data.id, payload).then(resp => {
-          const { success, message } = resp
-
-          notification[success ? 'success' : 'warning']({
-            message: 'Application Message',
-            description: message,
-            style: { top: '30px' },
+              this.onBack()
+            } else {
+              this.setState({ error: true, message })
+            }
           })
+          .finally(_ => this.setState({ formLoading: false }))
+          .catch(error => console.error(error.message))
+      } else {
+        await this.setState({ formLoading: true })
+        api
+          .put(`dapps/${formData.id}`, value)
+          .then(({ success, message }) => {
+            if (success) {
+              notification['success']({
+                message: 'My DApps',
+                description: message,
+                style: { top: '30px' },
+              })
 
-          if (success) {
-            this.onBack()
-          }
-        })
+              this.onBack()
+            } else {
+              this.setState({ error: true, message })
+            }
+          })
+          .finally(_ => this.setState({ formLoading: false }))
+          .catch(error => console.error(error.message))
       }
     }
   }
 
   onDeleteData = async id => {
     if (id) {
-      this.props.deleteDapp(id).then(resp => {
-        notification[resp.success ? 'success' : 'warning']({
-          message: 'Application Message',
-          description: resp.message,
-          style: { top: '30px' },
-        })
+      this.setState({ listLoading: true })
+      api
+        .del(`dapps/${id}`)
+        .then(({ success, message }) => {
+          notification[success ? 'success' : 'warning']({
+            message: 'My DApps',
+            description: message,
+            style: { top: '30px' },
+          })
 
-        if (resp.success) {
-          this.onRefresh()
-        }
-      })
+          if (success) this.onRefresh()
+        })
+        .finally(_ => this.setState({ listLoading: false }))
+        .catch(error => console.error(error.message))
     }
   }
 
   render() {
-    const { page, dapps, ipfs } = this.props
-    const { current, loadingLogo, fileList } = this.state
-    const { skeleton, loading, error, message, data, datas, paginate } = dapps
-
-    const logos =
-      fileList.length > 0
-        ? fileList
-        : [
-            {
-              uid: '-1',
-              name: 'fileList.png',
-              status: 'done',
-              url: data && data.logoUrl,
-            },
-          ]
+    const { page } = this.props
+    const { fileListLoading, fileList } = this.state
+    const { listLoading, listError, listMessage, listData } = this.state
+    const { formSkeleton, formLoading, formError, formMessage, formData } = this.state
 
     return page === 'list' ? (
       <DappsList
         {...this.props}
-        error={error}
-        datas={datas}
-        loading={loading}
-        message={message}
-        paginate={paginate}
-        onRefresh={this.onRefresh.bind(this)}
-        onDeleteData={id => this.onDeleteData(id)}
+        datas={listData}
+        error={listError}
+        loading={listLoading}
+        message={listMessage}
+        onRefresh={_ => this.onRefresh()}
+        onDeleteData={val => this.onDeleteData(val)}
       />
-    ) : page === 'upload' ? (
-      <DappsUpload
-        {...this.props}
-        data={data}
-        error={error}
-        loading={loading}
-        message={message}
-        dataIpfs={ipfs.data}
-        datasIpfs={ipfs.datas}
-        errorIpfs={ipfs.error}
-        loadingIpfs={ipfs.loading}
-        messageIpfs={ipfs.message}
-        onBack={this.onBack.bind(this)}
-        onRefresh={this.onPageUpload.bind(this)}
-        onUploadDapp={this.onUploadDapp.bind(this)}
-        onGetDetailIpfs={val => this.onGetDetailIpfs(val)}
-      />
-    ) : (
+    ) : page === 'upload' ? null : (
       <DappsForm
         {...this.props}
-        data={data}
-        error={error}
-        fileList={logos}
-        current={current}
-        loading={loading}
-        message={message}
-        skeleton={skeleton}
-        loadingLogo={loadingLogo}
-        onBack={this.onBack.bind(this)}
-        onSkipDapp={this.onSkipDapp.bind(this)}
-        onUploadLogo={this.onUploadLogo.bind(this)}
-        onUploadDapp={this.onUploadDapp.bind(this)}
-        onSubmitDapp={values => this.onSubmitDapp(values)}
+        data={formData}
+        error={formError}
+        fileList={fileList}
+        loading={formLoading}
+        message={formMessage}
+        skeleton={formSkeleton}
+        onBack={_ => this.onBack()}
+        loadingLogo={fileListLoading}
+        onUploadLogo={_ => this.onUploadLogo()}
+        onSubmitDapp={val => this.onSubmitDapp(val)}
       />
-    )
+    ) // /> //   onGetDetailIpfs={val => this.onGetDetailIpfs(val)} //   onUploadDapp={this.onUploadDapp.bind(this)} //   onRefresh={this.onPageUpload.bind(this)} //   onBack={this.onBack.bind(this)} //   messageIpfs={ipfs.message} //   loadingIpfs={ipfs.loading} //   errorIpfs={ipfs.error} //   datasIpfs={ipfs.datas} //   dataIpfs={ipfs.data} //   message={message} //   loading={loading} //   error={error} //   data={data} //   {...this.props} // <DappsUpload
   }
 }
-
-const mapStateToProps = state => {
-  return { dapps: state.dapps, ipfs: state.ipfs }
-}
-
-const mapDispatchToProps = dispatch =>
-  bindActionCreators({ setNewDapp, getDapps, getDappById, createDapp, updateDapp, deleteDapp, getIpfsByHash }, dispatch)
-
-export default connect(mapStateToProps, mapDispatchToProps)(DappsDev)

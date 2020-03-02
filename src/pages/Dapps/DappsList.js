@@ -5,21 +5,19 @@ import { Card, Table, Button, Icon, Tag, Popconfirm, Avatar, Divider } from 'ant
 
 import PageError from '../PageError'
 
-const DappsList = props => {
-  const { title, path } = props
-  const { onRefresh, onDeleteData } = props
-  const { loading, error, message, datas } = props
-
+const DappsList = ({ title, path, loading, error, message, datas, onRefresh, onDeleteData }) => {
   const columns = [
     {
       title: '#',
       dataIndex: 'key',
+      width: 30,
       // ellipsis: false,
     },
     {
       title: 'Logo',
       dataIndex: 'logoUrl',
-      render: logoUrl => <Avatar shape="square" size={64} src={logoUrl} />,
+      width: 76,
+      render: logoUrl => <Avatar shape="square" size={56} src={logoUrl} />,
     },
     {
       title: 'Dapp Name',
@@ -35,10 +33,11 @@ const DappsList = props => {
     {
       title: 'IP Public',
       dataIndex: 'ipPublic',
+      ellipsis: true,
       render: ipPublic => (
         <label>
           {ipPublic ? (
-            <a href={`http://${ipPublic}`} target="_blank" rel="noopener noreferrer">
+            <a href={ipPublic} target="_blank" rel="noopener noreferrer">
               {ipPublic}
             </a>
           ) : (
@@ -48,18 +47,41 @@ const DappsList = props => {
       ),
     },
     {
-      title: 'Port',
-      dataIndex: 'port',
-    },
-    {
       title: 'Gun DB',
       dataIndex: 'gunDb',
-      render: gunDb => <label>{gunDb ? gunDb : 'waiting..'}</label>,
+      ellipsis: true,
+      render: gunDb => (
+        <label>
+          {gunDb ? (
+            <a href={gunDb} target="_blank" rel="noopener noreferrer">
+              {gunDb}
+            </a>
+          ) : (
+            'waiting..'
+          )}
+        </label>
+      ),
+    },
+    {
+      title: 'DApp Publish',
+      dataIndex: 'ipfsUrl',
+      ellipsis: true,
+      render: ipfsUrl => (
+        <label>
+          {ipfsUrl ? (
+            <a href={ipfsUrl} target="_blank" rel="noopener noreferrer">
+              {ipfsUrl}
+            </a>
+          ) : (
+            'waiting..'
+          )}
+        </label>
+      ),
     },
     {
       title: 'Status',
       render: record => {
-        const color = record.dappStatus === 'active' ? 'green' : record.dappStatus === 'pending' ? 'gold' : 'magenta'
+        const color = record.dappStatus === 'Publish' ? 'blue' : record.dappStatus === 'Pending' ? 'orange' : 'green'
         return (
           <Tag color={color} size="small">
             {record.dappStatus}
@@ -70,17 +92,21 @@ const DappsList = props => {
     {
       title: 'Created At',
       dataIndex: 'dappCreated',
+      ellipsis: false,
       render: dappCreated => moment(dappCreated).format('DD MMM YYYY hh:mm'),
     },
     {
       ellipsis: false,
       align: 'right',
+      // fixed: 'left',
+      width: 280,
       render: record => {
         const link = record.ipfsHash ? `/dapps/upload?id=${record.id}&ipfs=${record.ipfsHash}` : `/dapps/upload?id=${record.id}`
+        const disabled = record.dappStatus === 'Pending'
         return (
           <span>
             <Link to={link}>
-              <Button type="link" icon="cloud-upload" size="small">
+              <Button type="link" icon="cloud-upload" size="small" disabled={disabled}>
                 Upload
               </Button>
             </Link>
