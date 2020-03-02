@@ -7,7 +7,6 @@ import { DappsList, DappsForm, DappsUpload } from '../../pages'
 
 export default class DappsDev extends PureComponent {
   state = {
-    current: 0,
     fileList: [],
     fileListLoading: false,
 
@@ -21,6 +20,12 @@ export default class DappsDev extends PureComponent {
     formMessage: null,
     formLoading: false,
     formSkeleton: false,
+
+    uploadData: null,
+    uploadError: false,
+    uploadMessage: null,
+    uploadLoading: false,
+    uploadSkeleton: false,
   }
 
   componentDidMount() {
@@ -78,20 +83,24 @@ export default class DappsDev extends PureComponent {
 
   onPageUpload = async () => {
     const params = queryString.parse(this.props.location.search)
-    await this.props.getDappById(params.id)
-    if (params.ipfs) {
-      await this.props.getIpfsByHash(params.ipfs)
-    }
+    await this.setState({ uploadSkeleton: true })
+    api
+      .get(`dapps/${params.id}`)
+      .then(({ success, message, data }) => {
+        if (success) {
+          const fileList = [{ uid: '-1', name: 'fileList.png', status: 'done', url: data && data.logoUrl }]
+          this.setState({ uploadData: data, fileList })
+        } else {
+          this.setState({ uploadError: true, uploadMessage: message })
+        }
+      })
+      .finally(_ => this.setState({ uploadSkeleton: false }))
+      .catch(error => console.error(error.message))
   }
 
   onBack = async () => {
     const { history, path } = this.props
     await history.push(basePath(path))
-  }
-
-  onSkipDapp = () => {
-    const current = this.state.current + 1
-    this.setState({ current })
   }
 
   onUploadLogo = () => {
@@ -135,94 +144,42 @@ export default class DappsDev extends PureComponent {
     }
   }
 
-  onUploadDapp = (useStep = true) => {
-    const { path, dapps } = this.props
-    const { data } = dapps
-
-    if (data) {
-      const dataId = data.id
-
+  onUploadDapp = () => {
+    const { uploadData } = this.state
+    if (uploadData) {
       return {
         name: 'file',
         multiple: false,
         accept: '.zip',
-        showUploadList: useStep,
         customRequest: ({ onSuccess, onError, file }) => {
+          this.setState({ uploadLoading: true })
           api
-            .uploadDapp('ipfs/upload', file)
-            .then(resp => {
-              const { success, message, data } = resp
+            .uploadDapp(`ipfs/upload/${uploadData.id}`, file)
+            .then(({ success, message, data }) => {
+              notification[success ? 'success' : 'warning']({
+                message: 'My DApps',
+                description: message,
+                style: { top: '30px' },
+              })
+
               const fileList = [
                 {
                   uid: '-1',
                   name: 'fileList.zip',
                   status: success ? 'done' : 'error',
-                  url: data.hash,
+                  url: success ? data.Attributes.ipfsUrl : null,
                 },
               ]
 
               if (success) {
                 onSuccess(fileList)
-                const payload = { ipfsHash: data.hash }
-                this.props
-                  .updateDapp(dataId, payload)
-                  .then(resp => {
-                    const { success } = resp
-                    notification[success ? 'success' : 'warning']({
-                      message: 'Application Message',
-                      description: message,
-                      style: { top: '30px' },
-                    })
-
-                    if (success) {
-                      if (useStep) {
-                        const current = this.state.current + 1
-                        this.setState({ current })
-                      } else {
-                        window.location.href = `${path}?id=${dataId}&ipfs=${payload.ipfsHash}`
-                      }
-                    }
-                  })
-                  .catch(error => {
-                    console.error(error)
-                  })
+                this.onBack()
               } else {
                 onError(fileList)
               }
-
-              // const file = Array.isArray(files) ? files[0] : files
-              // if (file.status === 'success') {
-              //   onSuccess(file)
-              //   const payload = { ipfsHash: file.data.hash }
-              //   this.props
-              //     .updateDapp(data.id, payload)
-              //     .then(resp => {
-              //       const { success, message } = resp
-              //       notification[success ? 'success' : 'warning']({
-              //         message: 'Application Message',
-              //         description: success ? 'Success to upload DApp' : message,
-              //         style: { top: '30px' },
-              //       })
-
-              //       if (success) {
-              //         this.props.getIpfsByHash(payload.ipfsHash)
-
-              //         if (useStep) {
-              //           const current = this.state.current + 1
-              //           this.setState({ current })
-              //         } else {
-              //           this.onPageUpload()
-              //         }
-              //       }
-              //     })
-              //     .catch(error => {
-              //       console.error(error)
-              //     })
-              // } else {
-              //   onError(file)
-              // }
             })
-            .catch(error => console.error(error))
+            .finally(_ => this.setState({ uploadLoading: false }))
+            .catch(error => console.error(error.message))
         },
       }
     }
@@ -308,6 +265,7 @@ export default class DappsDev extends PureComponent {
     const { fileListLoading, fileList } = this.state
     const { listLoading, listError, listMessage, listData } = this.state
     const { formSkeleton, formLoading, formError, formMessage, formData } = this.state
+    const { uploadSkeleton, uploadLoading, uploadError, uploadMessage, uploadData } = this.state
 
     return page === 'list' ? (
       <DappsList
@@ -319,7 +277,18 @@ export default class DappsDev extends PureComponent {
         onRefresh={_ => this.onRefresh()}
         onDeleteData={val => this.onDeleteData(val)}
       />
-    ) : page === 'upload' ? null : (
+    ) : page === 'upload' ? (
+      <DappsUpload
+        {...this.props}
+        data={uploadData}
+        error={uploadError}
+        loading={uploadLoading}
+        message={uploadMessage}
+        skeleton={uploadSkeleton}
+        onBack={_ => this.onBack()}
+        onUploadDapp={val => this.onUploadDapp(val)}
+      />
+    ) : (
       <DappsForm
         {...this.props}
         data={formData}
@@ -333,6 +302,6 @@ export default class DappsDev extends PureComponent {
         onUploadLogo={_ => this.onUploadLogo()}
         onSubmitDapp={val => this.onSubmitDapp(val)}
       />
-    ) // /> //   onGetDetailIpfs={val => this.onGetDetailIpfs(val)} //   onUploadDapp={this.onUploadDapp.bind(this)} //   onRefresh={this.onPageUpload.bind(this)} //   onBack={this.onBack.bind(this)} //   messageIpfs={ipfs.message} //   loadingIpfs={ipfs.loading} //   errorIpfs={ipfs.error} //   datasIpfs={ipfs.datas} //   dataIpfs={ipfs.data} //   message={message} //   loading={loading} //   error={error} //   data={data} //   {...this.props} // <DappsUpload
+    )
   }
 }
