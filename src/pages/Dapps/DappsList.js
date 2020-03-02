@@ -21,10 +21,11 @@ const DappsList = ({ title, path, loading, error, message, datas, onRefresh, onD
     },
     {
       title: 'Dapp Name',
-      render: record => {
-        const link = record.ipfsHash ? `/dapps/upload?id=${record.id}&ipfs=${record.ipfsHash}` : `/dapps/upload?id=${record.id}`
-        return <Link to={link}>{record.name}</Link>
-      },
+      dataIndex: 'name',
+      // render: record => {
+      //   const link = record.ipfsHash ? `/dapps/upload?id=${record.id}&ipfs=${record.ipfsHash}` : `/dapps/upload?id=${record.id}`
+      //   return <Link to={link}>{record.name}</Link>
+      // },
     },
     {
       title: 'Category',
